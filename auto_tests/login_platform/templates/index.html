@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+hello this is startup page
+
+<a href = "{% url 'student_login' %}" >student login</a>
+<a href = "{% url 'student_register' %}" >student register</a>
+<br>
+<a href = "{% url 'teacher_login' %}">teacher login</a>
+<a href = "{% url 'teacher_register' %}">teacher register</a>
+{% endblock content %}
