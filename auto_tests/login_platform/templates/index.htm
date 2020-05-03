@@ -1,0 +1,39 @@
+{% extends 'base.htm' %}
+
+{% block head %}
+<title>Startup</title>
+{% endblock head %}
+
+
+{% block body %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if user.is_authenticated %}
+<p class="text-primary">You are logged in</p>
+<form action="/logout" method="POST">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+{% else %}
+<p class="text-warning">You are not logged in</p>
+<a href="{% url 'student_login' %}">student login</a>
+<a href="{% url 'student_register' %}">student register</a>
+<br>
+<a href="{% url 'teacher_login' %}">teacher login</a>
+<a href="{% url 'teacher_register' %}">teacher register</a>
+{% endif %}
+
+{% endblock body %}

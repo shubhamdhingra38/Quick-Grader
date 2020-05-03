@@ -1,0 +1,20 @@
+{% extends 'base.htm' %}
+
+{% block head %}
+<title>Login</title>
+{% endblock head %}
+
+
+{% block body %}
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+{% endblock body %}
