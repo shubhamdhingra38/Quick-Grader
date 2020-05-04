@@ -3,18 +3,28 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import RegistrationForm 
+from .forms import RegistrationForm
+from django.contrib.auth.models import Group
 
 # Create your views here.
 def index(request):
-    return render(request,'index.htm')
+    role = ''
+    if request.user.is_authenticated:
+        role = request.user.groups.all()[0].name
+    return render(request,'index.htm',{'role':role})
 
 
-def registration_view(request):
+def registration_view(request,flag):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            group = None
+            if flag == 2:
+                group= Group.objects.get(name = "Faculty")
+            else:
+                group = Group.objects.get(name = "Student")
+            user.groups.add(group)
             messages.success(request, 'Registered successfully')
             return redirect('index')
     else:
@@ -43,11 +53,11 @@ def logout_view(request):
 
 def student_register(request):
     # return render(request,'register.htm',context = { 'check':1, 'form': form})
-    return registration_view(request)
+    return registration_view(request,1)
 
 def teacher_register(request):
     # return render(request,'register.htm',context = { 'check':2 })
-    return registration_view(request)
+    return registration_view(request,2)
 
 def student_login(request):
     return login_view(request)

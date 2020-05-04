@@ -21,7 +21,7 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-<p class="text-primary">You are logged in</p>
+<p class="text-primary">You are logged in as {{ role }},{{user.username}}</p>
 <form action="/logout" method="POST">
     {% csrf_token %}
     <button type="submit">Logout</button>
