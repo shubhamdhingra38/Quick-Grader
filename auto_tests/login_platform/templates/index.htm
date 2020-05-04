@@ -1,7 +1,8 @@
 {% extends 'base.htm' %}
-
+{% load static %}
 {% block head %}
 <title>Startup</title>
+<link rel="stylesheet" href="{% static 'style.css' %}">
 {% endblock head %}
 
 
@@ -21,19 +22,50 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-<p class="text-primary">You are logged in</p>
+<p class="alert alert-success">You are logged in</p>
 <form action="/logout" method="POST">
     {% csrf_token %}
-    <button type="submit">Logout</button>
+    <button type="submit" class="btn btn-sm btn-success">Logout</button>
 </form>
 
 {% else %}
-<p class="text-warning">You are not logged in</p>
-<a href="{% url 'student_login' %}">student login</a>
-<a href="{% url 'student_register' %}">student register</a>
-<br>
-<a href="{% url 'teacher_login' %}">teacher login</a>
-<a href="{% url 'teacher_register' %}">teacher register</a>
+<p class="alert alert-warning">You are not logged in</p>
+
+
+<div class="row">
+    <div class="container col-md-5 col-sm-12">
+        <h3 class="title">Student</h3>
+        <div class="content w-100">
+            <a href="{% url 'student_register' %}">
+                <div class="content-overlay"></div>
+                <img class="content-image w-100 mx-3"
+                    src="{% static 'images/student.jpg' %}">
+                <div class="content-details fadeIn-top fadeIn-left">
+                    <h3>Register</h3>
+                    <p>Click here to register as a student.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="container col-md-5 col-sm-12">
+        <h3 class="title">Teacher</h3>
+        <div class="content w-100">
+            <a href="{% url 'teacher_register' %}">
+                <div class="content-overlay"></div>
+                <img class="content-image w-100 mx-3"
+                    src="{% static 'images/teacher.jpg' %}">
+                <div class="content-details fadeIn-top fadeIn-right">
+                    <h3>Register</h3>
+                    <p>Click here to register as a teacher.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<p class="d-flex justify-content-center mt-4">Already have an account? Click <a href="{% url 'student_login' %}" class="text-primary mx-1"> here </a> to login</p>
 {% endif %}
+
 
 {% endblock body %}
