@@ -22,6 +22,8 @@
 {% endif %}
 
 {% if user.is_authenticated %}
+{% if role == 'Faculty' %}
+<a href = '{% url 'test_list' %}'>View tests</a>{%  endif %}
 <p class="text-primary">You are logged in as {{ role }},{{user.username}}</p>
 <form action="/logout" method="POST">
     {% csrf_token %}
@@ -67,9 +69,7 @@
 <p class="d-flex justify-content-center mt-4">Already have an account? Click <a href="{% url 'student_login' %}" class="text-primary mx-1"> here </a> to login</p>
 {% endif %}
 
-<<<<<<< HEAD
-{% endblock body %}
-=======
+
+
 
 {% endblock body %}
->>>>>>> c122e98e54930a472b09d8248a3629972e40fc5a

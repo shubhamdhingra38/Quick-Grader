@@ -1,0 +1,14 @@
+{% extends 'base.htm' %}
+
+{% block body %}
+<a href = "{% url 'add_question' test.id %}"> Add question </a>
+
+{% for question in questions %}
+<div>
+
+<h2>Question {{ forloop.counter }}:</h2><br>
+<h4>{{ question.problem }}</h4>
+
+</div>
+{% endfor %}
+{% endblock body %}
