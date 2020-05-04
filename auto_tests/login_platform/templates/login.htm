@@ -1,20 +1,28 @@
 {% extends 'base.htm' %}
+{% load crispy_forms_tags %}
 
 {% block head %}
 <title>Login</title>
 {% endblock head %}
 
-
 {% block body %}
+
 {% if messages %}
     {% for message in messages %}
         <p>{{ message }}</p>
     {% endfor %}
 {% endif %}
 
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+{% if user.is_authenticated %}
+    <p class="alert alert-warning">You are already logged in</p>
+{% else %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success btn-sm">Login</button>
+    </form>
+{% endif %}
+
+
+
 {% endblock body %}
