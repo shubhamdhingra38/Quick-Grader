@@ -1,14 +1,39 @@
 {% extends 'base.htm' %}
 
 {% block body %}
-<a href = "{% url 'add_question' test.id %}"> Add question </a>
+<a href="{% url 'add_question' test.id %}"> Add question </a>
 
-{% for question in questions %}
-<div>
-
-<h2>Question {{ forloop.counter }}:</h2><br>
-<h4>{{ question.problem }}</h4>
+{% for question, context, type in questions_with_choices %}
+<div class="question mt-3">
+    <h5 class=""> <span class="font-weight-bold">Question {{ forloop.counter }}:</span> <span
+            class="lead">{{ question.problem }}</span></h5>
+    <hr>
+    {% if type == 1 %}
+    <!-- short answer -->
+    <div class="answer">
+        <p class="text-dark"> {{ context }} </p>
+    </div>
+    {% else %}
+    <!-- mcq -->
+    <div class="choices">
+        <ol>
+            {% for choice in context %}
+            {% if choice.is_answer %}
+            <li class="list-group-item list-group-item-success my-2">{{ choice }}</li>
+            {% else %}
+            <li class="list-group-item list-group-item-secondary my-2">{{ choice }}</li>
+            {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
 
 </div>
+
+<hr>
 {% endfor %}
+
+
+<style>
+</style>
 {% endblock body %}
