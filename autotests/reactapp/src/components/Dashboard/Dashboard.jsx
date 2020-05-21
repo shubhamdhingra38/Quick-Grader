@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
-import {Link} from "react-router-dom";
-import {Button, ListGroupItem, ListGroup, Container} from "react-bootstrap";
+import { Link, Redirect } from "react-router-dom";
+import { Button, ListGroupItem, ListGroup, Container } from "react-bootstrap";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken"
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -12,35 +12,93 @@ const api = {
     my_tests_url: "http://localhost:8000/test/mytests/",
     question_url: "http://localhost:8000/test/question/",
     choice_url: "http://localhost:8000/test/choice/",
+    // http://localhost:8000/test/response/?quizID=286
+    response_url: "http://localhost:8000/test/response/",
+    // http://localhost:8000/test/answer/?responseID=36
+    answer_url: "http://localhost:8000/test/answer/",
     credentials: {
         username: "ateacher2",
         password: "password123@"
     }
 };
 
+
+function ViewResponses(props) {
+    const [responses, setResponses] = useState([]);
+
+    // get the responses intially
+    useEffect(() => {
+        axios.get(api.response_url, {
+            params: {
+                quizID: props.id
+            },
+            auth: api.credentials
+        }).then(res => {
+            console.log(res);
+            setResponses(res.data);
+        })
+            .catch(err => console.log(err.response));
+    }, []);
+
+    let responseElements = responses.map((data) => {
+        return (
+            <ListGroupItem>
+                <Link to= {"/dashboard/response/" + data.id}>{data.taken_by}</Link>
+            </ListGroupItem>
+        )
+    });
+    return (
+        <ListGroup className="w-50">
+            {responseElements} 
+        </ListGroup>
+    )
+}
+
 // display a single Test
-function Test(props){
-    const [questions, setQuestions] = useState([]);
-    const [choices, setChoices] = useState({});
+function Test(props) {
+    const [viewResponses, setViewResponses] = useState(false);
+    const [questions, setQuestions] = useState(() => {
+        let localStorageQuestions = localStorage.getItem(`question${props.data.id}`);
+        // console.log(JSON.parse(localStorageQuestions));
+        return localStorageQuestions ? JSON.parse(localStorageQuestions) : [];
+    });
+    const [choices, setChoices] = useState(() => {
+        let localStorageChoices = localStorage.getItem(`choices${props.data.id}`);
+        return localStorageChoices ? JSON.parse(localStorageChoices) : {};
+    });
 
     // console.log(questions);
 
     // get all the questions for the currenttest
     useEffect(() => {
+        if (questions.length > 0)
+            return;
+        console.log("making requests");
         props.data.questions.forEach((questionID, index) => {
-            axios.get(api.question_url + questionID, {auth: api.credentials}).then(res => {
+            axios.get(api.question_url + questionID, { auth: api.credentials }).then(res => {
                 setQuestions(prevQuestions => {
                     return [...prevQuestions, res.data];
                 });
-                if(res.data.type == 2){
+                if (res.data.type == 2) {
                     getChoices(res.data);
                 }
-    
+
             }).catch(err => console.log(err.response));
         });
 
-
     }, []);
+
+
+    useEffect(() => {
+        // console.log(questions);
+        localStorage.setItem(`question${props.data.id}`, JSON.stringify(questions));
+    }, [questions]);
+
+
+    useEffect(() => {
+        localStorage.setItem(`choices${props.data.id}`, JSON.stringify(choices));
+    }, [choices]);
+
 
     const getChoices = (data) => {
         let choices = data.choices;
@@ -49,17 +107,19 @@ function Test(props){
         for (choiceId in choices) {
             console.log(api.choice_url + choices[choiceId]);
             promises.push(axios.get(api.choice_url + choices[choiceId], { auth: api.credentials }));
-                // .then(res => {
-                //     choicesInfo.push([data.id, data.choices]);
-                // })
-                // .catch(err => console.log(err.response));
+            // .then(res => {
+            //     choicesInfo.push([data.id, data.choices]);
+            // })
+            // .catch(err => console.log(err.response));
         }
-        Promise.all(promises).then(res =>{
-            res.forEach((choice) =>{
+        Promise.all(promises).then(res => {
+            res.forEach((choice) => {
                 // choices.push([choice.data.id, choice.data.choice_text]);
-                setChoices(oldState => {return {
-                    ...oldState, [choice.data.id] : choice.data
-                }});
+                setChoices(oldState => {
+                    return {
+                        ...oldState, [choice.data.id]: choice.data
+                    }
+                });
             });
             // setQuestions(oldArray => [...oldArray, [data, choices]]);
         });
@@ -77,35 +137,36 @@ function Test(props){
                         Answer: {data.ans}
                     </p>
                 </div>
-          </li>)
+            </li>)
         }
         else {
             // MCQ
             let questionChoices = data.choices.map((choiceID) => {
                 return choices[choiceID] ? (
-                <ListGroup.Item key={`${props.data.id}-${choices[choiceID].id}`} className={choices[choiceID].is_answer ? "bg-success" : null}>
-                    <div className="choice p-1" >
-                        <p>
-                            {choices[choiceID].choice_text}
-                        </p>
-                    </div>
-                </ListGroup.Item>
+                    <ListGroup.Item key={`${props.data.id}-${choices[choiceID].id}`} className={choices[choiceID].is_answer ? "bg-success" : null}>
+                        <div className="choice p-1" >
+                            <p>
+                                {choices[choiceID].choice_text}
+                            </p>
+                        </div>
+                    </ListGroup.Item>
                 ) : "Loading..."
             });
 
             return (
                 <li key={data.id} className="my-3 list-group-item list-group-item-secondary">
-                <span style={{ fontSize: "1.2em" }}>Question {idx + 1}. {data.problem}</span>
-                <div className="choices">
-                    <ul>
-                        {questionChoices}
-                    </ul>
-                </div>
+                    <span style={{ fontSize: "1.2em" }}>Question {idx + 1}. {data.problem}</span>
+                    <div className="choices">
+                        <ul>
+                            {questionChoices}
+                        </ul>
+                    </div>
                 </li>
             )
 
         }
     });
+
     return (
         <Container>
             <div className="info">
@@ -113,19 +174,25 @@ function Test(props){
                 <p className="lead">{props.data.description}</p>
                 <hr className="info-hr" />
             </div>
-            { questionElements }
+            {questionElements}
+            {viewResponses && <div className="responses">
+                <ViewResponses id={props.data.id} questions={questions} />
+            </div>}
+
+            <Button onClick={() => setViewResponses(value => !value)}
+                className="btn btn-info btn-sm">{viewResponses ? "Hide Responses" : "Show Responses"}</Button>
         </Container>
     )
 }
 
 
-function ShowTests(props){
+function ShowTests(props) {
 
     let testElements = props.data.map(data => {
-       return (<div key={data.id}>
-           <Test data={data} key={data.id}/>
-           <hr/>
-           </div>)
+        return (<div key={data.id}>
+            <Test data={data} key={data.id} />
+            <hr />
+        </div>)
     });
     return (
         <div>
@@ -134,7 +201,7 @@ function ShowTests(props){
     )
 }
 
-function CreatedTests(props){
+function CreatedTests(props) {
     const [myTests, setMyTests] = useState(null);
     console.log(myTests);
 
@@ -145,19 +212,19 @@ function CreatedTests(props){
         }).then(res => {
             setMyTests(res.data);
         })
-        .catch(err => console.log(err.response));
+            .catch(err => console.log(err.response));
     }, []);
 
 
     return (
-        myTests ? <ShowTests data={myTests}/>:
-        <div>
-            Loading...
+        myTests ? <ShowTests data={myTests} /> :
+            <div>
+                Loading...
         </div>
     )
 };
 
-function Analyze(props){
+function Analyze(props) {
     return (
         <div>
             Some visualizations here
@@ -165,25 +232,29 @@ function Analyze(props){
     )
 }
 
-function Dashboard(props){
-    const [showTests, setShowTests] = useState(false);
-    
+function Dashboard(props) {
+    const [showTests, setShowTests] = useState(() => {
+        let localStorageShowTests = localStorage.getItem('showTests');
+        return localStorageShowTests ? true : false;
+    });
+
 
     const handleShowTests = (e) => {
         setShowTests(true);
+        localStorage.setItem('showTests', true);
     };
 
 
     return (
-        showTests ? <CreatedTests/>:
-        <div className="body-text">
-            Dashboard
-            <br/>
-            <Button className="btn btn-sm btn-info">Analyze</Button>
-            <br/>
-            <Button onClick={handleShowTests} className="btn btn-sm btn-dark">Created Tests</Button>
+        showTests ? <CreatedTests /> :
+            <div className="body-text">
+                Dashboard
+            <br />
+                <Button className="btn btn-sm btn-info">Analyze</Button>
+                <br />
+                <Button onClick={handleShowTests} className="btn btn-sm btn-dark">Created Tests</Button>
 
-        </div>
+            </div>
     )
 };
 

@@ -7,6 +7,7 @@ import TakeTest from './components/Test/TakeTest';
 import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Response from "./components/Dashboard/Response";
 
 
 
@@ -37,6 +38,7 @@ class App extends React.Component{
             <Route exact path="/dashboard">
               <Dashboard/>
             </Route>
+            <Route path="/dashboard/response/:responseID" component={Response}/>
           </Switch>
           <Route path="/taketest">
             <TakeTest/>

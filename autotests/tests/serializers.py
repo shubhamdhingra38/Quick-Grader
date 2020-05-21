@@ -133,6 +133,7 @@ class ResponseSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault(),
         read_only=True
     )
+    # test = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta:
         model = Response

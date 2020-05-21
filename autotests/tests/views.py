@@ -75,18 +75,28 @@ class ChoiceView(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
 
+# class AnswerView(viewsets.ModelViewSet):
+#     queryset = Answer.objects.all()
+#     serializer_class = AnswerSerializer
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [SessionAuthentication, BasicAuthentication]
+
 class AnswerView(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
+    def list(self, request):
+        if len(request.query_params) == 0:
+            return super().list(request)
+        else:
+            response_id = request.query_params['responseID']
+            response = Response.objects.filter(id=int(response_id)).first()
+            answers = self.get_queryset().filter(response=response)
+            serializer = AnswerSerializer(answers, many=True)
+            return APIResponse(serializer.data)
 
-class AnswerView(viewsets.ModelViewSet):
-    queryset = Answer.objects.all()
-    serializer_class = AnswerSerializer
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
 
 class ResponseView(viewsets.ModelViewSet):
@@ -95,6 +105,15 @@ class ResponseView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
+    def list(self, request):
+        if len(request.query_params) == 0:
+            return super().list(request)
+        else:
+            quiz_id = request.query_params['quizID']
+            quiz = Quiz.objects.filter(id=int(quiz_id)).first()
+            responses = Response.objects.filter(test=quiz)
+            serializer = ResponseSerializer(responses, many=True)
+            return APIResponse(serializer.data)
 
 class CreatedTestsView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
