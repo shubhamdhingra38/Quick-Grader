@@ -1,0 +1,28 @@
+.border {
+    border-width:2px !important;
+}
+.texts{
+    padding-left: 10px;
+    outline: none;
+    border: none;
+    background: transparent !important;
+}
+
+.info-hr{
+    border-style: dashed;
+    border-width: 1px;
+}
+
+.test-creation{
+    border-color: #abced4 !important;
+    background-color: rgba(0, 0, 0, 0.13) !important;
+}
+.test-form{
+    border-color: #abced4 !important;
+    border-radius: 5px;
+    border-width: 4px !important; 
+}
+hr{
+    border: 1px solid #abced4;
+    margin-bottom: 20px;
+}

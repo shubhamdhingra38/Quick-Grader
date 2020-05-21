@@ -4,12 +4,13 @@ from .views import UserView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'userz', UserView)
+router.register(r'users', UserView)
 urlpatterns = router.urls
+
 
 urlpatterns += [
 #     path('users/', UserListView.as_view()),
     # path('users/<int:pk>', UserListView.as_view()),
-    path('users/user/', UserInstanceView.as_view()),
+    path('user/', UserInstanceView.as_view()),
 ]
 

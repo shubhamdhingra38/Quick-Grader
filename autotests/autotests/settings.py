@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+ROOT_PATH = os.path.dirname(__file__)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # custom
     'authentication',
-    'frontend',
+    'ml',
     'tests',
     # third party
     'rest_framework',
@@ -130,6 +130,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'reactapp', 'build', 'static' ), # update the STATICFILES_DIRS
+    os.path.join(BASE_DIR, 'reactapp', 'build' ) # update the STATICFILES_DIRS
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -139,11 +148,3 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ]
 }
-
-STATICFILE_DIRS = [
-    os.path.join(BASE_DIR, 'reactapp/build/static'),
-]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-]

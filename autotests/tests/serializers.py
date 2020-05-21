@@ -26,11 +26,11 @@ class QuizSerializer(serializers.ModelSerializer):
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
     quiz_code = serializers.CharField(source='test.code')
-    choices = serializers.StringRelatedField(many=True, read_only=True)
+    choices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Question
-        fields = ('id', 'type', 'problem', 'quiz_code', 'choices', 'ans',)
+        fields = ('id', 'type', 'problem', 'quiz_code', 'ans', 'choices', )
 
     def create(self, validated_data):
         try:
@@ -47,7 +47,7 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
 
 class QuestionViewSerializer(serializers.ModelSerializer):
     quiz_code = serializers.CharField(source='test.code')
-    choices = serializers.StringRelatedField(many=True)
+    choices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     ans = serializers.SerializerMethodField('get_ans')
 
     # if the person who is accessing this endpoint created the quiz, show them answer
@@ -74,6 +74,8 @@ class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = ('id', 'question_id', 'choice_text', 'is_answer',)
+        # write_only_fields = ('is_answer',)
+        # extra_kwargs = {'is_answer': {'write_only': True}}
 
     def create(self, validated_data):
         try:

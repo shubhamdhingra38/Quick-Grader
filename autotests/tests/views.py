@@ -4,7 +4,7 @@ from .serializers import (QuizSerializer, QuestionCreateSerializer,
                           ResponseSerializer)
 from rest_framework import generics
 from django.contrib.auth.models import User
-from rest_framework.response import Response
+from rest_framework.response import Response as APIResponse
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
@@ -94,3 +94,16 @@ class ResponseView(viewsets.ModelViewSet):
     serializer_class = ResponseSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+
+class CreatedTestsView(generics.ListCreateAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+    permission_classes = [IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+    def list(self, request):
+        queryset = self.get_queryset().filter(author=self.request.user)
+        serializer = QuizSerializer(queryset, many=True)
+        # print(serializer)
+        return APIResponse(serializer.data)
