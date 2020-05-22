@@ -56,6 +56,7 @@ function ViewResponses(props) {
 
 // display a single Test
 function Test(props) {
+    // const [viewPlagiarism, setViewPlagiarism] = useState(false);
     const [viewResponses, setViewResponses] = useState(false);
     const [questions, setQuestions] = useState(() => {
         let localStorageQuestions = localStorage.getItem(`question${props.data.id}`);
@@ -167,6 +168,7 @@ function Test(props) {
         }
     });
 
+
     return (
         <Container>
             <div className="info">
@@ -181,6 +183,9 @@ function Test(props) {
 
             <Button onClick={() => setViewResponses(value => !value)}
                 className="btn btn-info btn-sm">{viewResponses ? "Hide Responses" : "Show Responses"}</Button>
+            
+            <Link className="btn btn-danger btn-sm" to={"/dashboard/plagiarism-results/" + props.data.id}>Plagiarism Results</Link>
+            {/* <Button onClick={() => setViewPlagiarism(true)} className="btn btn-danger btn-sm">Plagiarism Results</Button> */}
         </Container>
     )
 }
@@ -233,27 +238,29 @@ function Analyze(props) {
 }
 
 function Dashboard(props) {
-    const [showTests, setShowTests] = useState(() => {
-        let localStorageShowTests = localStorage.getItem('showTests');
-        return localStorageShowTests ? true : false;
-    });
+    const [showTests, setShowTests] = useState(false);
 
 
     const handleShowTests = (e) => {
-        setShowTests(true);
-        localStorage.setItem('showTests', true);
+        setShowTests(oldValue => !oldValue);
+        // localStorage.setItem('showTests', false);
     };
 
 
     return (
-        showTests ? <CreatedTests /> :
+        showTests ? (
+            <div>
+                <Button onClick={handleShowTests} className="btn btn-sm btn-dark">Back</Button>
+                <CreatedTests />
+            </div>
+            ):
             <div className="body-text">
                 Dashboard
             <br />
                 <Button className="btn btn-sm btn-info">Analyze</Button>
                 <br />
                 <Button onClick={handleShowTests} className="btn btn-sm btn-dark">Created Tests</Button>
-
+                <br />
             </div>
     )
 };

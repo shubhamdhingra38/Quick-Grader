@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     # path('', views.ml_info, name='ml_info'),
-    # path('plag_detect', views.plagiarism_detection, name='plag_detection'),
+    path('detect-plagiarism/<int:quiz_id>', views.plagiarism_detection, name='plag_detection'),
 ]

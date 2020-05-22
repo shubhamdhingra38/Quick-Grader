@@ -82,7 +82,7 @@ class Choice(models.Model):
 class Answer(models.Model):
     response = models.ForeignKey(Response, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    short_ans = models.CharField(max_length=200, blank=True)
+    short_ans = models.CharField(max_length=1000, blank=True)
     choice_id = models.IntegerField(null=True, blank=True)
 
     def __str__(self):

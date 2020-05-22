@@ -9,8 +9,8 @@ const api = {
     quiz_url: "http://localhost:8000/test/quiz/",
     response_url: "http://localhost:8000/test/response/",
     credentials: {
-        username: "ateacher3",
-        password: "password123@"
+        username: "astudent",
+        password: "password"
     }
 }
 

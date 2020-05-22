@@ -17,7 +17,8 @@ const api = {
     }
 };
 
-function Response({match}) {
+function Response(props) {
+    // console.log(props.location);
     const [answers, setAnswers] = useState([]);
     const [quizInfo, setQuizInfo] = useState();
     const [studentName, setStudentName] = useState("");
@@ -25,7 +26,7 @@ function Response({match}) {
     // console.log(answers);
 
     useEffect(() => {
-        axios.get(api.response_url + match.params.responseID, { auth: api.credentials }).then(res => {
+        axios.get(api.response_url + props.match.params.responseID, { auth: api.credentials }).then(res => {
             // console.log(res);
             setStudentName(res.data.taken_by);
             axios.get(api.quiz_url + res.data.test, { auth : api.credentials}).then(result => {
@@ -37,7 +38,7 @@ function Response({match}) {
         axios.get(api.answer_url, {
             auth: api.credentials,
             params: {
-                responseID: match.params.responseID
+                responseID: props.match.params.responseID
             }
         }).then(res => {
             res.data.forEach(ele => {
@@ -64,7 +65,7 @@ function Response({match}) {
 
     return (
         <div>
-            { quizInfo ? <Test name={studentName} data={quizInfo} answers={answers}/> : "Loading..." }
+            { quizInfo ? <Test name={studentName} matchingResponses={props.location.matchingResponses} data={quizInfo} answers={answers}/> : "Loading..." }
         </div>
     )
 }
@@ -74,7 +75,6 @@ export default Response;
 
 
 function Test(props) {
-    // console.log(props);
     const [questions, setQuestions] = useState([]);
     const [choices, setChoices] = useState({});
 
@@ -100,7 +100,7 @@ function Test(props) {
         let promises = [];
         let choiceId;
         for (choiceId in choices) {
-            console.log(api.choice_url + choices[choiceId]);
+            // console.log(api.choice_url + choices[choiceId]);
             promises.push(axios.get(api.choice_url + choices[choiceId], { auth: api.credentials }));
         }
         Promise.all(promises).then(res => {
@@ -119,7 +119,13 @@ function Test(props) {
         if (data.type == 1) {
             let id = data.id;
             // Short answer
-            return (<li key={data.id} className="my-3 list-group-item list-group-item-secondary">
+            let className = "my-3 list-group-item ";
+            // console.log(props);
+            if(props.matchingResponses)
+                className += props.matchingResponses.find(ele => ele == data.id) ? "list-group-item-danger" : "list-group-item-seconday";
+            else
+                className += "list-group-item-secondary"
+            return (<li key={data.id} className={className}>
                 <span style={{ fontSize: "1.2em" }}>Question {idx + 1}. {data.problem}</span>
                 <div className="answer">
                     <p>
