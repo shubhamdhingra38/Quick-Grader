@@ -53,6 +53,7 @@ QUESTION_TYPE = (
 class Response(models.Model):
     test = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     taken_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_score = models.IntegerField(default=0)
 
     def __str__(self):
         return self.test.title + ":" + self.taken_by.__str__()
@@ -84,6 +85,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     short_ans = models.CharField(max_length=1000, blank=True)
     choice_id = models.IntegerField(null=True, blank=True)
+    score = models.IntegerField(default=0)
 
     def __str__(self):
         return self.response.taken_by.__str__() + ":" + self.short_ans
