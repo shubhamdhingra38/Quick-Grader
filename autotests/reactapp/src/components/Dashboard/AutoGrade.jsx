@@ -75,7 +75,9 @@ function AutoGrade(props) {
                 type: 2
             }, { auth: api.credentials }));
         });
-        Promise.all(promises).then(res => console.log("done"));
+        Promise.all(promises).then(res => {
+            axios.post()
+        }).catch(err => console.log(err));
     };
 
     let questionElements = questions.map((data, idx) => {

@@ -12,6 +12,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from .models import Quiz, Question, Choice, Answer, Response
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from ml.views import grade_others_in_cluster
 
 
 
@@ -147,7 +148,6 @@ class Grade(APIView):
 
     def post(self, request):
         type_grading = int(request.data['type'])
-        print(type_grading, 'type_grading')
         assert type_grading in [1, 2]
         
         if type_grading == 1:
@@ -176,9 +176,8 @@ class Grade(APIView):
             response.save()
 
         else:
-            print(request.data)
             answer = Answer.objects.get(id=request.data['answerID'])
             answer.score = int(request.data['grade'])
             answer.save()
-
+        
         return APIResponse("done...")

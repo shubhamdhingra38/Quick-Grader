@@ -459,19 +459,6 @@ def grade_others_in_cluster(request, quiz_id):
  
 
     calculate_total_score(quiz_id)
-        
-        # for answer in answers:
-                
-    # for i in range(len(responses)):
-    #     response = responses[i]
-    #     response_answers = [answer for answer in Answer.objects.filter(
-    #         response=response).order_by('question_id')]
-    #     answers[response.taken_by.username] = response_answers
-
-
-    # print(answers)
-    # print(responses)
-
     return HttpResponse("ok")
 
 
@@ -490,24 +477,9 @@ def calculate_total_score(quiz_id):
                     answer.save()
                 total_scores[answer.response.taken_by.username] += answer.score
         if idx == len(questions) - 1:
-            print('here')
+            # print('here')
             for answer in answers:
-                print(answer.response.id, 'id')
+                # print(answer.response.id, 'id')
                 answer.response.total_score = total_scores[answer.response.taken_by.username]
                 answer.response.save()
     print(total_scores)
-
-
-    # for question in questions:
-    #     for answer in answers:
-    #         if question.type == 2: # mcq
-
-
-
-        # elif questions[q].type == 2: # MCQ
-        # for a in range(len(answers.keys())):
-        #     student = student_names[a]
-        #     if Choice.objects.get(id=answers[student][q].choice_id).is_answer:
-        #     # total_score += answer.question.maximum_score
-        #         answers[student][q].score = answers[student][q].question.maximum_score
-        #         answers[student][q].save()

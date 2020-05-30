@@ -10,19 +10,26 @@
 
 .info-hr{
     border-style: dashed;
-    border-width: 1px;
+    border-width: 1.5px;
 }
 
 .test-creation{
     border-color: #abced4 !important;
-    background-color: rgba(0, 0, 0, 0.13) !important;
+    background-color: rgba(0, 100, 100, 0.13) !important;
 }
 .test-form{
+    box-shadow: aquamarine;
+    background-color: rgba(0, 100, 100, 0.13) !important;
     border-color: #abced4 !important;
     border-radius: 5px;
-    border-width: 4px !important; 
+    border-width: 2px !important; 
 }
+
+.test-form .bg-success{
+    background-color:  rgba(0, 139, 139, 0.516) !important; 
+}
+
 hr{
-    border: 1px solid #abced4;
+    border: 1px solid #1313136b;
     margin-bottom: 20px;
 }
