@@ -9,7 +9,7 @@ import About from "./components/About/About";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Response from "./components/Dashboard/Response";
 import PlagiarismResults from "./components/Dashboard/Plagiarism";
-
+import AutoGrade from "./components/Dashboard/AutoGrade";
 
 import {
   BrowserRouter as Router,
@@ -40,6 +40,7 @@ class App extends React.Component{
             </Route>
             <Route path="/dashboard/response/:responseID" component={Response}/>
             <Route path="/dashboard/plagiarism-results/:quizID" component={PlagiarismResults}/>
+            <Route path="/dashboard/autograde/:quizID" component={AutoGrade}/>
           </Switch>
           <Route path="/taketest">
             <TakeTest/>

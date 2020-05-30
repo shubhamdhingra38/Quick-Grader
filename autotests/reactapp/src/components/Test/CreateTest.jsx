@@ -126,6 +126,11 @@ function AddQuestions(props) {
     const [inputs, setInputs] = useState([]);
     const [allowSubmit, setAllowSubmit] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [maxMarks, setMaxMarks] = useState({});
+
+    // console.log(maxMarks);
+    console.log(questions);
+
 
     const addShortAnswer = () => {
         if (!allowSubmit) {
@@ -188,7 +193,12 @@ function AddQuestions(props) {
                 return { ...oldState, [id]: question };
             });
         }
-
+        else if (event.target.name == "max-score") {
+            let id = event.target.id;
+            setMaxMarks(oldValue => {
+                return {...oldValue, [id]: value};
+            });
+        }
     };
 
     const handleSubmit = (event) => {
@@ -202,6 +212,7 @@ function AddQuestions(props) {
 
         let type, problem, ans, choices;
         for (let property in questions) {
+            console.log(property, 'property');
             let question = questions[property];
             console.log(question);
             if (question.length == 2) {
@@ -217,11 +228,13 @@ function AddQuestions(props) {
                 ans = ""; // choice consists of isAnswer property already
             }
 
+            console.log('maxscore', maxMarks[property], maxMarks);
             axios.post(api.question_url, {
                 "type": type,
                 "problem": problem,
                 "quiz_code": code,
-                "ans": ans
+                "ans": ans,
+                "maximum_score": parseInt(maxMarks[property])
             }, {
                 auth: api.credentials
             }).then(res => {
@@ -252,6 +265,11 @@ function AddQuestions(props) {
                 <div key={value.id}>
                     <ShortAnswerQuestion  id={value.id} questions={questions}
                         setQuestions={setQuestions} handleChange={handleChange} />
+                    
+                    <div className="max-score mt-2">
+                        <label htmlFor={`${value.id}`}>Maximum Marks:</label>
+                        <input onChange={handleChange} className="ml-1" style={{width: "50px"}} type="text" name="max-score" id={`${value.id}`}/>
+                    </div>
                     <hr/>
                 </div>
                 )
@@ -260,6 +278,10 @@ function AddQuestions(props) {
             <div key={value.id}>
                 <MultipleChoiceQuestion id={value.id} questions={questions}
                 setChoices={setQuestions} handleChange={handleChange} />
+                <div className="max-score mt-2">
+                    <label htmlFor={`${value.id}`}>Maximum Marks:</label>
+                    <input onChange={handleChange} className="ml-1" value={maxMarks[value.id]} style={{width: "50px"}} type="text" name="max-score" id={`${value.id}`}/>
+                </div>
                 <hr/>
             </div>
         )

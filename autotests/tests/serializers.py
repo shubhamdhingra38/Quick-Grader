@@ -30,7 +30,7 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'type', 'problem', 'quiz_code', 'ans', 'choices', )
+        fields = ('id', 'type', 'problem', 'quiz_code', 'ans', 'choices', 'maximum_score',)
 
     def create(self, validated_data):
         try:
@@ -38,7 +38,7 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
             q = Quiz.objects.get(code=validated_data['test']['code'])
             question = Question(test=q, type=validated_data['type'],
                                 problem=validated_data['problem'],
-                                ans=validated_data['ans'])
+                                ans=validated_data['ans'], maximum_score=validated_data['maximum_score'])
             question.save()
             return question
         except ObjectDoesNotExist:
@@ -59,7 +59,7 @@ class QuestionViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'type', 'problem', 'quiz_code', 'choices', 'ans',)
+        fields = ('id', 'type', 'problem', 'quiz_code', 'choices', 'ans', 'maximum_score')
 
     def update(self, instance, validated_data):
         instance.problem = validated_data.get('problem', instance.problem)

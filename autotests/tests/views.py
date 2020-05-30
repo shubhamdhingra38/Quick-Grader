@@ -11,6 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from .models import Quiz, Question, Choice, Answer, Response
 from rest_framework import viewsets
+from rest_framework.views import APIView
+
 
 
 class QuizListView(viewsets.ModelViewSet):
@@ -126,3 +128,57 @@ class CreatedTestsView(generics.ListCreateAPIView):
         serializer = QuizSerializer(queryset, many=True)
         # print(serializer)
         return APIResponse(serializer.data)
+
+
+
+class Grade(APIView):
+    """
+    API endpoint for grading, used in automatic grading/manual grading
+
+    For example:
+
+    Grade with answerID (used with supervised grading)
+    {"grade":7,"answerID":"101", "type":2}
+
+    Grade with responseID (used with automatic grading)
+    {"grade":{"107":"7","108":"4"},"responseID":"54", "type":1}
+    where each key in 'grade' is an questionID and the corresponding value is the score
+    """
+
+    def post(self, request):
+        type_grading = int(request.data['type'])
+        print(type_grading, 'type_grading')
+        assert type_grading in [1, 2]
+        
+        if type_grading == 1:
+            total_score = 0
+            response_id = int(request.data['responseID'])
+            response = Response.objects.get(id=response_id)
+            print(response)
+            answers = Answer.objects.filter(response=response)
+            for answer in answers:
+                if answer.question.type == 2: # MCQ
+                    if Choice.objects.get(id=answer.choice_id).is_answer:
+                        total_score += answer.question.maximum_score
+                        answer.score += answer.question.maximum_score
+                        answer.save()
+            print(answers)
+            grades = request.data['grade']
+            for q_id in grades.keys():
+                question = Question.objects.get(id=int(q_id))
+                print('ques', question)
+                ans = answers.get(question=question)
+                ans.score = int(grades[q_id])
+                total_score += int(grades[q_id])
+                ans.save()
+            
+            response.total_score = total_score
+            response.save()
+
+        else:
+            print(request.data)
+            answer = Answer.objects.get(id=request.data['answerID'])
+            answer.score = int(request.data['grade'])
+            answer.save()
+
+        return APIResponse("done...")

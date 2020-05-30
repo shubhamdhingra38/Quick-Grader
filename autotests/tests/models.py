@@ -61,10 +61,10 @@ class Response(models.Model):
 
 class Question(models.Model):
     test = models.ForeignKey(Quiz, related_name='questions', on_delete=models.CASCADE)
-
     type = models.IntegerField(choices=QUESTION_TYPE, default=1)
     problem = models.TextField()
-    ans = models.CharField(max_length=200, blank=True)
+    ans = models.CharField(max_length=1000, blank=True)
+    maximum_score = models.IntegerField(default=0)
 
     def __str__(self):
         return self.problem

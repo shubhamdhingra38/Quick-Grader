@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Dashboard.css";
 import { Link, Redirect } from "react-router-dom";
 import { Button, ListGroupItem, ListGroup, Container } from "react-bootstrap";
+import AutoGrade from "./AutoGrade";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken"
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -184,6 +185,8 @@ function Test(props) {
             <Button onClick={() => setViewResponses(value => !value)}
                 className="btn btn-info btn-sm">{viewResponses ? "Hide Responses" : "Show Responses"}</Button>
             
+            {/* <Button onClick={} className="btn btn-warning btn-sm">Auto Grade</Button> */}
+            <Link className="btn btn-warning btn-sm" to={"/dashboard/autograde/" + props.data.id}>Auto Grade</Link>
             <Link className="btn btn-danger btn-sm" to={"/dashboard/plagiarism-results/" + props.data.id}>Plagiarism Results</Link>
             {/* <Button onClick={() => setViewPlagiarism(true)} className="btn btn-danger btn-sm">Plagiarism Results</Button> */}
         </Container>
@@ -246,14 +249,14 @@ function Dashboard(props) {
         // localStorage.setItem('showTests', false);
     };
 
-
-    return (
-        showTests ? (
+    if(showTests)
+        return (
             <div>
                 <Button onClick={handleShowTests} className="btn btn-sm btn-dark">Back</Button>
                 <CreatedTests />
             </div>
-            ):
+        )
+    return (
             <div className="body-text">
                 Dashboard
             <br />
