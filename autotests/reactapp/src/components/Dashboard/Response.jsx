@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ListGroupItem, ListGroup, Container, Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 
 const api = {
@@ -80,8 +81,9 @@ function Test(props) {
     const [questions, setQuestions] = useState([]);
     const [choices, setChoices] = useState({});
     const [marks, setMarks] = useState({});
+    let history = useHistory();
 
-    console.log(marks);
+    // console.log(marks);
 
 
     useEffect(() => {
@@ -129,7 +131,10 @@ function Test(props) {
         console.log(JSON.stringify(obj));
         axios.post(api.grade_url, obj, {
             auth: api.credentials
-        }).then(res => console.log(res)).catch(err => console.log(err.response));
+        }).then(res => {
+            console.log(res);
+            history.goBack();
+        }).catch(err => console.log(err.response));
     };
 
     const handleChange = (event) => {
@@ -164,7 +169,7 @@ function Test(props) {
                     </li>
                     <div className="max-score mt-2">
                         <label htmlFor={id}>Marks:</label>
-                        <input id={id} value={marks[id]} onChange={handleChange} className="ml-1" style={{ width: "50px" }} type="text" name="score" />
+                        <input id={id} value={marks[id]} onChange={handleChange} className="ml-1" style={{ width: "33px" }} type="text" name="score" />
                         <label htmlFor={id}>/{data.maximum_score}</label>
                     </div>
                 </div>
@@ -203,11 +208,11 @@ function Test(props) {
     });
 
     return (
-        <Container>
+        <Container className="border test-form p-3 mt-3">
             <div className="info">
                 <h3 className="display-4">{props.data.title}</h3>
                 <p className="lead">{props.data.description}</p>
-                <p className="text-danger">Taken by: {props.name}</p>
+                <p className="text-danger">Attempted by: {props.name}</p>
                 <hr className="info-hr" />
             </div>
             {questionElements}

@@ -1,59 +1,66 @@
-import React from 'react';
-import './App.css';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Body from './components/Body';
-import TakeTest from './components/Test/TakeTest';
+import React from "react";
+import "./App.css";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Body from "./components/Body";
+import TakeTest from "./components/Test/TakeTest";
 import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Response from "./components/Dashboard/Response";
 import PlagiarismResults from "./components/Dashboard/Plagiarism";
 import AutoGrade from "./components/Dashboard/AutoGrade";
+import CreatedTests from "./components/Dashboard/CreatedTests";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-class App extends React.Component{
-  constructor(props){
+class App extends React.Component {
+  constructor(props) {
     super(props);
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <Router>
         <div>
-          <Header/>
+          <Header />
           <Switch>
             <Route exact path="/">
-              <Body/>
+              <Body />
             </Route>
             <Route exact path="/about">
-              <About/>
+              <About />
             </Route>
             <Route exact path="/dashboard">
-              <Dashboard/>
+              <Dashboard />
             </Route>
-            <Route path="/dashboard/response/:responseID" component={Response}/>
-            <Route path="/dashboard/plagiarism-results/:quizID" component={PlagiarismResults}/>
-            <Route path="/dashboard/autograde/:quizID" component={AutoGrade}/>
+            <Route exact path="/dashboard/created-tests">
+              <CreatedTests />
+            </Route>
+            <Route
+              path="/dashboard/created-tests/response/:responseID"
+              component={Response}
+            />
+            <Route
+              path="/dashboard/created-tests/plagiarism-results/:quizID"
+              component={PlagiarismResults}
+            />
+            <Route
+              path="/dashboard/created-tests/autograde/:quizID"
+              component={AutoGrade}
+            />
           </Switch>
-          <Route path="/taketest">
-            <TakeTest/>
+          <Route path="/take-test">
+            <TakeTest />
           </Route>
           <Switch>
-            <Route path="/createtest" component={CreateTest}/>
+            <Route path="/create-test" component={CreateTest} />
           </Switch>
-          <Footer/>
+          <Footer />
         </div>
       </Router>
-    )
+    );
   }
 }
-
 
 export default App;

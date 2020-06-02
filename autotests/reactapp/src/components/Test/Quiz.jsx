@@ -195,7 +195,7 @@ function Quiz(props) {
         return <Redirect to="/" />
 
     return (
-        <Container className="border test-form mt-5" style={{ minHeight: "50vh" }}>
+        <Container className="border test-form mt-5 p-3" style={{ minHeight: "50vh" }}>
             {/* Info about Quiz */}
             <div className="info">
                 <h3 className="display-4">{props.title}</h3>

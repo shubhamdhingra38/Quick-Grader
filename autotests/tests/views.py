@@ -10,11 +10,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from .models import Quiz, Question, Choice, Answer, Response
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.views import APIView
 from ml.views import grade_others_in_cluster
-
-
 
 class QuizListView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
@@ -60,6 +58,23 @@ class QuizListView(viewsets.ModelViewSet):
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class QuizInstanceView(generics.RetrieveAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    lookup_field = 'code'
+
+    def get(self, request, code=None):
+        if code:
+            try:
+                quiz = Quiz.objects.get(code=code)
+            except ObjectDoesNotExist:
+                return APIResponse(status=status.HTTP_404_NOT_FOUND)
+        serializer = QuizSerializer(quiz)
+        return APIResponse(serializer.data)
+
+
 class QuestionListView(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     permission_classes = [IsAuthenticated]
@@ -84,7 +99,10 @@ class ChoiceView(viewsets.ModelViewSet):
 #     permission_classes = [IsAuthenticated]
 #     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
-class AnswerView(viewsets.ModelViewSet):
+class AnswerView(mixins.CreateModelMixin,
+                 mixins.DestroyModelMixin,
+                 mixins.ListModelMixin,
+                 viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
@@ -101,12 +119,12 @@ class AnswerView(viewsets.ModelViewSet):
             return APIResponse(serializer.data)
 
 
-
 class ResponseView(viewsets.ModelViewSet):
     queryset = Response.objects.all()
     serializer_class = ResponseSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+
 
     def list(self, request):
         if len(request.query_params) == 0:
@@ -117,6 +135,7 @@ class ResponseView(viewsets.ModelViewSet):
             responses = Response.objects.filter(test=quiz)
             serializer = ResponseSerializer(responses, many=True)
             return APIResponse(serializer.data)
+
 
 class CreatedTestsView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
@@ -129,7 +148,6 @@ class CreatedTestsView(generics.ListCreateAPIView):
         serializer = QuizSerializer(queryset, many=True)
         # print(serializer)
         return APIResponse(serializer.data)
-
 
 
 class Grade(APIView):
@@ -149,7 +167,7 @@ class Grade(APIView):
     def post(self, request):
         type_grading = int(request.data['type'])
         assert type_grading in [1, 2]
-        
+
         if type_grading == 1:
             total_score = 0
             response_id = int(request.data['responseID'])
@@ -157,7 +175,7 @@ class Grade(APIView):
             print(response)
             answers = Answer.objects.filter(response=response)
             for answer in answers:
-                if answer.question.type == 2: # MCQ
+                if answer.question.type == 2:  # MCQ
                     if Choice.objects.get(id=answer.choice_id).is_answer:
                         total_score += answer.question.maximum_score
                         answer.score += answer.question.maximum_score
@@ -171,7 +189,7 @@ class Grade(APIView):
                 ans.score = int(grades[q_id])
                 total_score += int(grades[q_id])
                 ans.save()
-            
+
             response.total_score = total_score
             response.save()
 
@@ -179,5 +197,5 @@ class Grade(APIView):
             answer = Answer.objects.get(id=request.data['answerID'])
             answer.score = int(request.data['grade'])
             answer.save()
-        
+
         return APIResponse("done...")

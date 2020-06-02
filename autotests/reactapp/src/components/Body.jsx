@@ -16,6 +16,7 @@ const api = {
 }
 
 function Body() {
+    document.title = "Home";
     const [welcomeMsg, setWelcomeMsg] = useState({ loading: true, msg: "", group: "Unassigned" });
     useEffect(() => {
         axios.get(api.quiz_url, {
@@ -28,7 +29,7 @@ function Body() {
     }, []);
 
     let btnText = welcomeMsg.group == "Unassigned" ? "Invalid" : (welcomeMsg.group == "Faculty" ? "Create Test" : "Take Test")
-    let redirectTo = welcomeMsg.group == "Faculty" ? "createtest" : "taketest";
+    let redirectTo = welcomeMsg.group == "Faculty" ? "/create-test" : "/take-test";
     let info = <div>
         <p className="font-cursive">Welcome, <b style={{ color: "orange" }}>{welcomeMsg.msg}</b></p>
         <p className="font-cursive">You are currently logged in as a: <b className={welcomeMsg.group}>{welcomeMsg.group}</b></p>
@@ -47,4 +48,4 @@ function Body() {
     )
 }
 
-export default Body
+export default Body;

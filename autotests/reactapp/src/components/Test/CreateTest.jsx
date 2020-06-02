@@ -291,9 +291,9 @@ function AddQuestions(props) {
 
     let type, problem, ans, choices;
     for (let property in questions) {
-      console.log(property, "property");
+      //   console.log(property, "property");
       let question = questions[property];
-      console.log(question);
+      //   console.log(question);
       if (question.length == 2) {
         // Type 1 short answer
         type = 1;
@@ -306,7 +306,7 @@ function AddQuestions(props) {
         ans = ""; // choice consists of isAnswer property already
       }
 
-      console.log("maxscore", maxMarks[property], maxMarks);
+      //   console.log("maxscore", maxMarks[property], maxMarks);
       axios
         .post(
           api.question_url,
@@ -421,12 +421,27 @@ function AddQuestions(props) {
       </Alert>
     ) : null;
 
-  if (redirect) return <Redirect to="/" />;
+  if (redirect)
+    return (
+      <Container className="invitation-code">
+        <p className="text-success font-cursive ">Test has been successfully created!</p>
+        <p className="font-cursive ">Share this code with students: </p>
+        <div className="code-share">
+          <p className="card">{props.code}</p>
+          <button
+            className="btn btn-sm btn-success"
+            onClick={() => navigator.clipboard.writeText(props.code)}
+          >
+            Copy
+          </button>
+        </div>
+      </Container>
+    );
   return (
     <Container>
       {/* Error message */}
       {alert}
-      <Container className="border test-form" style={{ minHeight: "80vh" }}>
+      <Container className="border test-form p-3" style={{ minHeight: "80vh" }}>
         {/* Info about Quiz */}
         <div className="info">
           <h3 className="display-4">{props.title}</h3>

@@ -153,6 +153,7 @@ class AutoGrading:
             results.append(scaled_similarity[0])
         return results
 
+
 class PlagiarismDetection:
     stop_words = set(stopwords.words('english'))
     wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB,
@@ -296,6 +297,11 @@ def plagiarism_detection(request, quiz_id):
         answers.append([answer for answer in Answer.objects.filter(
             response=responses[i]).order_by('question_id')])
     questions = []
+
+    if len(answers) <= 1:
+        return JsonResponse({"message": "There must be at least 2 responses to perform this action"},
+                            status=400)
+
     for answer in answers[0]:
         questions.append(answer.question)
 
@@ -345,22 +351,22 @@ def auto_grading(request, quiz_id):
     expected_answers = []
     for i in range(len(questions)):
         question = questions[i]
-        if question.type == 1: # short answer
+        if question.type == 1:  # short answer
             expected_answers.append([1, question.ans])
-        else: # mcq
+        else:  # mcq
             expected_answers.append([2])
 
     print(expected_answers)
 
-
     for q in range(len(questions)):
-        if questions[q].type == 1: # short answer
+        if questions[q].type == 1:  # short answer
             student_answers = []
             for a in range(len(answers.keys())):
                 student = student_names[a]
                 student_answers.append(str(answers[student][q]))
             autograder = AutoGrading(student_answers)
-            scores = autograder.automated_grading(expected_answer=expected_answers[q][1], scale=questions[q].maximum_score)
+            scores = autograder.automated_grading(
+                expected_answer=expected_answers[q][1], scale=questions[q].maximum_score)
             print(scores)
             scores = [max(ceil(x), 0) for x in scores]
             print('cleaned', scores)
@@ -368,21 +374,25 @@ def auto_grading(request, quiz_id):
                 student = student_names[a]
                 answers[student][q].score = scores[a]
                 answers[student][q].save()
-        elif questions[q].type == 2: # MCQ
+        elif questions[q].type == 2:  # MCQ
             for a in range(len(answers.keys())):
                 student = student_names[a]
                 if Choice.objects.get(id=answers[student][q].choice_id).is_answer:
-                # total_score += answer.question.maximum_score
+                    # total_score += answer.question.maximum_score
                     answers[student][q].score = answers[student][q].question.maximum_score
                     answers[student][q].save()
-
 
     return HttpResponse("ok")
 
 
 def supervised_automatic_grading(request, quiz_id):
-    response = get_cluster_centers(quiz_id)
+    try:
+        response = get_cluster_centers(quiz_id)
+    except (ValueError, IndexError):
+        return JsonResponse({"message": "This action cannot be performed when there are less than 2 responses"},
+                            status=400)
     return JsonResponse(response)
+
 
 def get_cluster_centers(quiz_id):
 
@@ -409,7 +419,7 @@ def get_cluster_centers(quiz_id):
     response = defaultdict(list)
 
     for q in range(len(questions)):
-        if questions[q].type == 1: # short answer
+        if questions[q].type == 1:  # short answer
             student_answers = []
             for a in range(len(answers.keys())):
                 student = student_names[a]
@@ -417,61 +427,63 @@ def get_cluster_centers(quiz_id):
             autograder = AutoGrading(student_answers)
             autograder.fit()
             res = autograder.score_cluster_centers(N_PER_CLUSTER)
-            with open(f'./cache/ques{questions[q].id}_autograder.pkl', 'wb') as f: 
+            with open(f'./cache/ques{questions[q].id}_autograder.pkl', 'wb') as f:
                 pickle.dump(autograder, f)
             print(res)
             for group in res:
                 for idx in group:
                     idx = int(idx)
-                    response[questions[q].id].append(answers[student_names[idx]][q].id)
+                    response[questions[q].id].append(
+                        answers[student_names[idx]][q].id)
         print(response)
     return response
 
+
 def grade_others_in_cluster(request, quiz_id):
-    response = get_cluster_centers(quiz_id) # the cluster centers which are graded
+    # the cluster centers which are graded
+    response = get_cluster_centers(quiz_id)
     quiz = Quiz.objects.get(id=int(quiz_id))
     responses = Response.objects.filter(test=quiz)
     answers = defaultdict(list)
     # print(response, 'response here')
 
-
     questions_ids = response.keys()
     # print(questions_ids)
 
     for q_id in questions_ids:
-        with open(f'./cache/ques{q_id}_autograder.pkl', 'rb') as f: 
+        with open(f'./cache/ques{q_id}_autograder.pkl', 'rb') as f:
             autograder = pickle.load(f)
         question = Question.objects.get(id=q_id)
         answers = Answer.objects.filter(question=question)
         # print(answers)
         # print([x.id for x in answers])
         score_dict = {}
-        for idx, answer in enumerate(answers): 
+        for idx, answer in enumerate(answers):
             if answer.id in response[q_id]:
                 score_dict[idx] = answer.score
-        
+
         # print(score_dict)
         result = autograder.grade_all(score_dict)
         for r in result.keys():
             r = int(r)
             answers[r].score = result[r]
             answers[r].save()
- 
 
     calculate_total_score(quiz_id)
     return HttpResponse("ok")
 
 
 def calculate_total_score(quiz_id):
+    print("This is called...")
     quiz = Quiz.objects.get(id=quiz_id)
     questions = list(Question.objects.filter(test=quiz))
     total_scores = defaultdict(int)
     for idx, question in enumerate(questions):
         answers = Answer.objects.filter(question=question)
         for answer in answers:
-            if question.type == 1: # short answer
+            if question.type == 1:  # short answer
                 total_scores[answer.response.taken_by.username] += answer.score
-            else: # mcq
+            else:  # mcq
                 if Choice.objects.get(id=answer.choice_id).is_answer:
                     answer.score = question.maximum_score
                     answer.save()
