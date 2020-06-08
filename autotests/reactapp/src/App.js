@@ -11,8 +11,9 @@ import Response from "./components/Dashboard/Response";
 import PlagiarismResults from "./components/Dashboard/Plagiarism";
 import AutoGrade from "./components/Dashboard/AutoGrade";
 import CreatedTests from "./components/Dashboard/CreatedTests";
-
+import Analyze from "./components/Dashboard/Analyze/Analyze";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import GenerateReport from "./components/Dashboard/Analyze/GenerateReport";
 
 class App extends React.Component {
   constructor(props) {
@@ -37,6 +38,10 @@ class App extends React.Component {
             <Route exact path="/dashboard/created-tests">
               <CreatedTests />
             </Route>
+            <Route exact path="/dashboard/analyze">
+              <Analyze />
+            </Route>
+            <Route path="/dashboard/analyze/generate-report" component={GenerateReport} ></Route>
             <Route
               path="/dashboard/created-tests/response/:responseID"
               component={Response}

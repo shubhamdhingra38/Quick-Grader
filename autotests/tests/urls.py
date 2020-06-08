@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from .views import (QuizListView, QuestionListView, ChoiceView, AnswerView,
-                    ResponseView, CreatedTestsView, Grade, QuizInstanceView)
+                    ResponseView, CreatedTestsView, Grade, QuizInstanceView,
+                    get_report)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -17,6 +18,7 @@ urlpatterns += [
     path('quiz/instance/<str:code>/', QuizInstanceView.as_view(), name="quiz-instance"),
     path('mytests/', CreatedTestsView.as_view()),
     path('grade/', Grade.as_view()),
+    path('report/<str:code>/', get_report),
 ]
 
 # urlpatterns = [

@@ -33,11 +33,6 @@ const api = {
     password: "password123@",
   },
 };
-
-function Analyze(props) {
-  return <div>Some visualizations here</div>;
-}
-
 function Dashboard(props) {
   console.log(props);
   document.title = "Dashboard";
@@ -60,7 +55,7 @@ function Dashboard(props) {
         <div className="container col-md-5 col-sm-12">
           <h3 className="title">Analyze</h3>
           <div className="content w-100">
-            <Link to="/">
+            <Link to="/dashboard/analyze">
               <div className="content-overlay"></div>
               <img
                 className="content-image w-100 mx-3"

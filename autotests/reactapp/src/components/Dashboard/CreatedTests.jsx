@@ -55,7 +55,7 @@ function ViewResponses(props) {
 
   let responseElements = responses.map((data) => {
     return (
-      <ListGroupItem>
+      <ListGroupItem key={data.id}>
         <Link to={"/dashboard/created-tests/response/" + data.id}>
           {data.taken_by}
         </Link>

@@ -13,6 +13,9 @@ from .models import Quiz, Question, Choice, Answer, Response
 from rest_framework import viewsets, mixins
 from rest_framework.views import APIView
 from ml.views import grade_others_in_cluster
+import csv
+from django.http import HttpResponse, JsonResponse
+
 
 class QuizListView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
@@ -125,7 +128,6 @@ class ResponseView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
-
     def list(self, request):
         if len(request.query_params) == 0:
             return super().list(request)
@@ -168,34 +170,76 @@ class Grade(APIView):
         type_grading = int(request.data['type'])
         assert type_grading in [1, 2]
 
-        if type_grading == 1:
-            total_score = 0
-            response_id = int(request.data['responseID'])
-            response = Response.objects.get(id=response_id)
-            print(response)
-            answers = Answer.objects.filter(response=response)
-            for answer in answers:
-                if answer.question.type == 2:  # MCQ
-                    if Choice.objects.get(id=answer.choice_id).is_answer:
-                        total_score += answer.question.maximum_score
-                        answer.score += answer.question.maximum_score
-                        answer.save()
-            print(answers)
-            grades = request.data['grade']
-            for q_id in grades.keys():
-                question = Question.objects.get(id=int(q_id))
-                print('ques', question)
-                ans = answers.get(question=question)
-                ans.score = int(grades[q_id])
-                total_score += int(grades[q_id])
-                ans.save()
+        try:
 
-            response.total_score = total_score
-            response.save()
+            if type_grading == 1:
+                total_score = 0
+                response_id = int(request.data['responseID'])
+                response = Response.objects.get(id=response_id)
+                # print(response)
+                answers = Answer.objects.filter(response=response)
+                for answer in answers:
+                    if answer.question.type == 2:  # MCQ
+                        if Choice.objects.get(id=answer.choice_id).is_answer:
+                            total_score += answer.question.maximum_score
+                            answer.score += answer.question.maximum_score
+                            answer.save()
+                # print(answers)
+                grades = request.data['grade']
+                for q_id in grades.keys():
+                    question = Question.objects.get(id=int(q_id))
+                    assert int(grades[q_id]) <= question.maximum_score
+                    # print('ques', question)
+                    ans = answers.get(question=question)
+                    ans.score = int(grades[q_id])
+                    total_score += int(grades[q_id])
+                    ans.save()
 
-        else:
-            answer = Answer.objects.get(id=request.data['answerID'])
-            answer.score = int(request.data['grade'])
-            answer.save()
+                response.total_score = total_score
+                response.save()
+
+            else:
+                answer = Answer.objects.get(id=request.data['answerID'])
+                answer.score = int(request.data['grade'])
+                answer.save()
+        except AssertionError:
+            return APIResponse({"message": "Can not assign a value greater than maximum score"}, status=400)
 
         return APIResponse("done...")
+
+def get_report(request, code):
+    """
+    Generates the response for downloading a .csv file of the responses to some quiz.
+
+    Args:
+        'code': Body parameter, the unique code of the Quiz
+
+    Returns:
+        CSV response of requested data
+    """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="result.csv"'
+    try:
+        titles = ['S.No', 'Name']
+        quiz = Quiz.objects.get(code=code)
+        questions = Question.objects.filter(test=quiz).order_by('id')
+        titles += [f'Question{i+1}' for i in range(len(questions))]
+        print(titles)
+        responses = Response.objects.filter(test=quiz)
+        print(responses[0].taken_by.get_full_name())
+        serializer = ResponseSerializer(responses, many=True)
+        writer = csv.writer(response)
+        writer.writerow(titles)
+        for i, res in enumerate(responses):
+            answers = Answer.objects.filter(response=res).order_by('question__id')
+            r = [i, res.taken_by.get_full_name()]
+            for answer in answers:
+                r += [answer.score]
+            print(r)
+            writer.writerow(r)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
+
+    return response
+  
