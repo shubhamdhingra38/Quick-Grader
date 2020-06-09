@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from .views import (QuizListView, QuestionListView, ChoiceView, AnswerView,
                     ResponseView, CreatedTestsView, Grade, QuizInstanceView,
-                    get_report)
+                    get_report, lock_unlock_quiz)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -19,6 +19,7 @@ urlpatterns += [
     path('mytests/', CreatedTestsView.as_view()),
     path('grade/', Grade.as_view()),
     path('report/<str:code>/', get_report),
+    path('quiz/lock/<str:code>/', lock_unlock_quiz),
 ]
 
 # urlpatterns = [

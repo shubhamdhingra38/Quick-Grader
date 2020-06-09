@@ -16,13 +16,13 @@ import {
 } from "react-bootstrap";
 import AutoGrade from "./AutoGrade";
 
-
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 const api = {
   my_tests_url: "http://localhost:8000/test/mytests/",
   question_url: "http://localhost:8000/test/question/",
+  lock_unlock_quiz_url: "http://localhost:8000/test/quiz/lock/",
   choice_url: "http://localhost:8000/test/choice/",
   // http://localhost:8000/test/response/?quizID=286
   response_url: "http://localhost:8000/test/response/",
@@ -53,23 +53,33 @@ function ViewResponses(props) {
       .catch((err) => console.log(err.response));
   }, []);
 
-  let responseElements = responses.map((data) => {
+  let responseElements = responses.map((data, index) => {
     return (
-      <ListGroupItem key={data.id}>
+      <ListGroupItem
+        key={data.id}
+        style={data.graded & 1 ? { backgroundColor: "rgba(200, 200, 200, 1)" } : null}
+      >
+        <div className="d-flex justify-content-between">
         <Link to={"/dashboard/created-tests/response/" + data.id}>
           {data.taken_by}
         </Link>
+        {data.graded && <p className="lead mb-0" style={{fontSize: "1.0rem"}}>
+          Score: {data.total_score}
+        </p>}
+        </div>
       </ListGroupItem>
     );
   });
+
   return <ListGroup className="w-50">{responseElements}</ListGroup>;
 }
 
 // display a single Test
 function Test(props) {
-  // const [viewPlagiarism, setViewPlagiarism] = useState(false);
   const [toolbarStatus, setToolbarStatus] = useState(false);
   const [viewResponses, setViewResponses] = useState(false);
+  const [lockStatus, setLockStatus] = useState(false);
+  const [gradedCounter, setGradedCounter] = useState(0);
   const [questions, setQuestions] = useState(() => {
     let localStorageQuestions = localStorage.getItem(
       `question${props.data.id}`
@@ -86,8 +96,9 @@ function Test(props) {
 
   // get all the questions for the currenttest
   useEffect(() => {
+    setLockStatus(props.data.locked);
     if (questions.length > 0) return;
-    console.log("making requests");
+    // console.log("making requests");
     props.data.questions.forEach((questionID, index) => {
       axios
         .get(api.question_url + questionID, { auth: api.credentials })
@@ -169,7 +180,6 @@ function Test(props) {
               <p>{choices[choiceID].choice_text}</p>
             </div>
           </ListGroup.Item>
-
         ) : (
           "Loading..."
         );
@@ -194,6 +204,15 @@ function Test(props) {
     }
   });
 
+  const changeLockStatus = () => {
+    axios
+      .get(api.lock_unlock_quiz_url + props.data.code + "/", {
+        auth: api.credentials,
+      })
+      .then((res) => setLockStatus(!lockStatus))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <Container className="test-form my-5 border p-3">
       <div className="info">
@@ -203,41 +222,100 @@ function Test(props) {
       </div>
       <div className="list-group">{questionElements}</div>
 
-      <Button
-        onClick={() => setToolbarStatus((oldValue) => !oldValue)}
-        aria-controls="collapse-text"
-        aria-expanded={toolbarStatus}
-        className="btn-dark my-3"
-      >
-        {toolbarStatus ? "Hide Toolbar" : "Show Toolbar"}
-      </Button>
-      <Collapse in={toolbarStatus}>
-        <div id="collapse-text">
-          <Button
-            onClick={() => setViewResponses((value) => !value)}
-            className="btn btn-info btn-sm m-1"
-          >
-            {viewResponses ? "Hide Responses" : "Show Responses"}
-          </Button>
+      <div className="toolbar d-flex justify-content-end">
+        <Link
+          onClick={() => setToolbarStatus((oldValue) => !oldValue)}
+          aria-controls="collapse-text"
+          aria-expanded={toolbarStatus}
+          className="my-3 d-flex justify-content-end"
+        >
+          {toolbarStatus ? (
+            <img
+              style={{ height: "30px" }}
+              className="content-image mx-3"
+              src={require("../static/images/collapse.png")}
+            />
+          ) : (
+            <img
+              style={{ height: "30px" }}
+              className="content-image mx-3"
+              src={require("../static/images/info.png")}
+            />
+          )}
+        </Link>
 
+        {/* Lock/Unlock the quiz (stop accepting responses)  */}
+        <button
+          className="lock-unlock btn btn-transparent"
+          onClick={changeLockStatus}
+        >
+          {lockStatus ? (
+            <img
+              style={{ height: "30px" }}
+              className="content-image mx-1"
+              src={require("../static/images/unlock.png")}
+            />
+          ) : (
+            <img
+              style={{ height: "30px" }}
+              className="content-image mx-1"
+              src={require("../static/images/lock.png")}
+            />
+          )}
+        </button>
+      </div>
+
+      <Collapse in={toolbarStatus} className="mt-4">
+        <div id="collapse-text mt-2">
+          <Link onClick={() => setViewResponses((value) => !value)}>
+            {viewResponses ? (
+              <div className="d-flex">
+                <img
+                  style={{ height: "25px" }}
+                  className="content-image mx-1"
+                  src={require("../static/images/responses.png")}
+                />
+                <p className="text-dark">Hide Responses</p>
+              </div>
+            ) : (
+              <div className="d-flex">
+                <img
+                  style={{ height: "25px" }}
+                  className="content-image mx-1"
+                  src={require("../static/images/responses.png")}
+                />
+                <p className="text-dark">Show Responses</p>
+              </div>
+            )}
+          </Link>
           {viewResponses && (
-            <div className="responses my-2">
+            <div className="responses my-1 mb-3">
+              <p className="lead" style={{ fontSize: "0.8rem" }}>
+                Click the responses to grade them manually.
+              </p>
               <ViewResponses id={props.data.id} questions={questions} />
             </div>
           )}
 
           <Link
-            className="btn btn-warning btn-sm m-1"
+            className="m-0"
             to={"/dashboard/created-tests/autograde/" + props.data.id}
           >
-            Auto Grade
+            <div className="d-flex">
+              <img
+                style={{ height: "25px" }}
+                className="content-image mx-1"
+                src={require("../static/images/autograde.png")}
+              />
+              <p className="text-dark">Auto Grade</p>
+            </div>
           </Link>
-          <Link
+          {/* <Link
             className="btn btn-danger btn-sm m-1"
             to={"/dashboard/created-tests/plagiarism-results/" + props.data.id}
           >
             Plagiarism Results
-          </Link>
+          </Link> */}
         </div>
       </Collapse>
     </Container>
@@ -271,7 +349,18 @@ function CreatedTests(props) {
       .catch((err) => console.log(err.response));
   }, []);
 
-  return myTests ? <ShowTests data={myTests} /> : <div className={"body-text"}>Loading...</div>;
+  return myTests ? (
+    <ShowTests data={myTests} />
+  ) : (
+    <div className={"body-text"}>
+      Loading...
+      <img
+        style={{ width: "30px" }}
+        className="content-image mx-3"
+        src={require("../static/images/loading.png")}
+      />
+    </div>
+  );
 }
 
 export default CreatedTests;

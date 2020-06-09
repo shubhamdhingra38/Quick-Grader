@@ -96,12 +96,6 @@ class ChoiceView(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
 
-# class AnswerView(viewsets.ModelViewSet):
-#     queryset = Answer.objects.all()
-#     serializer_class = AnswerSerializer
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-
 class AnswerView(mixins.CreateModelMixin,
                  mixins.DestroyModelMixin,
                  mixins.ListModelMixin,
@@ -168,10 +162,7 @@ class Grade(APIView):
 
     def post(self, request):
         type_grading = int(request.data['type'])
-        assert type_grading in [1, 2]
-
         try:
-
             if type_grading == 1:
                 total_score = 0
                 response_id = int(request.data['responseID'])
@@ -196,6 +187,7 @@ class Grade(APIView):
                     ans.save()
 
                 response.total_score = total_score
+                response.graded = True
                 response.save()
 
             else:
@@ -203,9 +195,20 @@ class Grade(APIView):
                 answer.score = int(request.data['grade'])
                 answer.save()
         except AssertionError:
-            return APIResponse({"message": "Can not assign a value greater than maximum score"}, status=400)
+            return APIResponse({"message": "Can not assign a value greater than maximum score"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return APIResponse("done...")
+        return APIResponse({"message": "Successfully graded"}, status=status.HTTP_200_OK)
+
+
+def lock_unlock_quiz(request, code):
+    try:
+        quiz = Quiz.objects.get(code=code)
+        quiz.locked = not quiz.locked
+        quiz.save()
+        action = "locked" if quiz.locked else "unlocked"
+    except ObjectDoesNotExist:
+        return JsonResponse({"message": "Unable to lock the quiz, the code entered was incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse({"message": f"Successfully {action} the quiz"}, status=status.HTTP_200_OK)
 
 def get_report(request, code):
     """
@@ -231,7 +234,8 @@ def get_report(request, code):
         writer = csv.writer(response)
         writer.writerow(titles)
         for i, res in enumerate(responses):
-            answers = Answer.objects.filter(response=res).order_by('question__id')
+            answers = Answer.objects.filter(
+                response=res).order_by('question__id')
             r = [i, res.taken_by.get_full_name()]
             for answer in answers:
                 r += [answer.score]
@@ -242,4 +246,3 @@ def get_report(request, code):
         return JsonResponse({"message": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
 
     return response
-  

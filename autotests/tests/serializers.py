@@ -14,7 +14,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quiz
-        fields = ('id', 'author', 'code', 'title', 'description', 'questions',)
+        fields = ('id', 'author', 'code', 'title', 'description', 'questions', 'locked')
         read_only_fields = ('id', 'code',)
 
     def create(self, validated_data):
@@ -137,7 +137,7 @@ class ResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Response
-        fields = ('id', 'test', 'taken_by',)
+        fields = ('id', 'test', 'taken_by', 'graded', 'total_score', )
 
     def validate_test(self, value):
         # do not let the student attempt the test twice by creating multiple responses

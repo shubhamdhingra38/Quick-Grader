@@ -23,6 +23,8 @@ class Quiz(models.Model):
     title = models.CharField(max_length=50, unique=False)
     description = models.TextField()
 
+    locked = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         '''
             uuid is used to generate an unique code for the test
@@ -54,6 +56,7 @@ class Response(models.Model):
     test = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     taken_by = models.ForeignKey(User, on_delete=models.CASCADE)
     total_score = models.IntegerField(default=0)
+    graded = models.BooleanField(default=False)
 
     def __str__(self):
         return self.test.title + ":" + self.taken_by.__str__()

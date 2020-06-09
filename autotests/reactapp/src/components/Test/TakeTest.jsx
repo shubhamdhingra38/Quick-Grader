@@ -55,19 +55,26 @@ function TakeTest() {
     console.log("A code was submitted");
     console.log(status.code);
     event.preventDefault();
-    console.log(api.quiz_url + status.code + '/');
+    console.log(api.quiz_url + status.code + "/");
     axios
       .get(api.quiz_url + status.code, {
         auth: api.credentials,
       })
       .then((res) => {
-        setQuizDetail({ data: res.data });
-        // create a new response
-        console.log(res.data);
-        createResponse(res.data.id);
+        if (res.data.locked) {
+          console.log("Quiz is locked!");
+          setWrongMsg(
+            "Sorry. No more responses are allowed, the quiz is locked."
+          );
+        } else {
+          setQuizDetail({ data: res.data });
+          // create a new response
+          console.log(res.data);
+          createResponse(res.data.id);
+        }
       })
       .catch((err) => {
-          console.log(err);
+        console.log(err);
         setWrongMsg("You probably entered an incorrect code. Try again.");
       });
   };

@@ -53,7 +53,7 @@ function Dashboard(props) {
     <Container>
       <div className="row">
         <div className="container col-md-5 col-sm-12">
-          <h3 className="title">Analyze</h3>
+          <h3 className="title">Generate Report</h3>
           <div className="content w-100">
             <Link to="/dashboard/analyze">
               <div className="content-overlay"></div>
@@ -62,10 +62,9 @@ function Dashboard(props) {
                 src={require("../static/images/analyze.jpg")}
               />
               <div className="content-details fadeIn-top fadeIn-left">
-                <h3>Analyze</h3>
+                <h3>Generate Report</h3>
                 <p>
-                  Using AI assissted visualizations to analyze the performance
-                  of students.
+                  Get the detailed result of students, their performance in each question and a total score in .csv format
                 </p>
               </div>
             </Link>
@@ -84,7 +83,26 @@ function Dashboard(props) {
                 <h3>Grade</h3>
                 <p>
                   Grade tests or use AI to do it automatically and effortlessly
-                  and report cases of plagiarism.
+                  and report cases of plagiarism
+                </p>
+              </div>
+            </Button>
+          </div>
+        </div>
+
+        <div className="container col-md-5 col-sm-12">
+          <h3 className="title">Plagiarism Detection</h3>
+          <div className="content w-100">
+            <Button variant="link" onClick={handleShowTests}>
+              <div className="content-overlay"></div>
+              <img
+                className="content-image w-100 mx-3"
+                src={require("../static/images/plagiarism.jpg")}
+              />
+              <div className="content-details fadeIn-top">
+                <h3>Plagiarism Detection</h3>
+                <p>
+                  Use AI to report cases of plagiarism between pairs of students and analyze the suspected similar answers to eliminate any false positives
                 </p>
               </div>
             </Button>
