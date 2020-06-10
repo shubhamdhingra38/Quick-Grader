@@ -55,7 +55,7 @@ function Dashboard(props) {
         <div className="container col-md-5 col-sm-12">
           <h3 className="title">Generate Report</h3>
           <div className="content w-100">
-            <Link to="/dashboard/analyze">
+            <Link to="/dashboard/generate-report">
               <div className="content-overlay"></div>
               <img
                 className="content-image w-100 mx-3"
@@ -93,7 +93,7 @@ function Dashboard(props) {
         <div className="container col-md-5 col-sm-12">
           <h3 className="title">Plagiarism Detection</h3>
           <div className="content w-100">
-            <Button variant="link" onClick={handleShowTests}>
+            <Link to="/dashboard/plagiarism">
               <div className="content-overlay"></div>
               <img
                 className="content-image w-100 mx-3"
@@ -105,7 +105,7 @@ function Dashboard(props) {
                   Use AI to report cases of plagiarism between pairs of students and analyze the suspected similar answers to eliminate any false positives
                 </p>
               </div>
-            </Button>
+            </Link>
           </div>
         </div>
       </div>

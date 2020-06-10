@@ -26,17 +26,21 @@ const api = {
 };
 
 function Response(props) {
-  document.title = "Grade";
+  if (!props.plag) document.title = "Grade";
+  // console.log(props);
   // console.log(props.location);
   const [answers, setAnswers] = useState([]);
   const [quizInfo, setQuizInfo] = useState();
   const [studentName, setStudentName] = useState("");
-
+  let responseID = props.match
+    ? props.match.params.responseID
+    : props.responseID;
+  console.log(responseID);
   // console.log(answers);
 
   useEffect(() => {
     axios
-      .get(api.response_url + props.match.params.responseID, {
+      .get(api.response_url + responseID, {
         auth: api.credentials,
       })
       .then((res) => {
@@ -56,7 +60,7 @@ function Response(props) {
       .get(api.answer_url, {
         auth: api.credentials,
         params: {
-          responseID: props.match.params.responseID,
+          responseID: responseID,
         },
       })
       .then((res) => {
@@ -70,15 +74,15 @@ function Response(props) {
         });
       })
       .catch((err) => console.log(err.response));
-  }, []);
+  }, [responseID]);
 
   return (
     <>
       {quizInfo ? (
         <Test
-          responseID={props.match.params.responseID}
+          responseID={responseID}
           name={studentName}
-          matchingResponses={props.location.matchingResponses}
+          matchingResponses={props.matchingResponses}
           data={quizInfo}
           answers={answers}
         />
@@ -216,9 +220,10 @@ function Test(props) {
       let className = "my-3 list-group-item ";
       // console.log(props);
       if (props.matchingResponses)
-        className += props.matchingResponses.find((ele) => ele == data.id)
-          ? "list-group-item-danger"
-          : "list-group-item-seconday";
+        className +=
+          props.matchingResponses == data.id
+            ? "list-group-item-danger"
+            : "list-group-item-seconday";
       else className += "list-group-item-secondary";
       return (
         <div className="response" key={data.id}>

@@ -17,10 +17,10 @@ function GenerateReport() {
 
   // console.log(code);
 
-  const handleChange = (event) => {
-    let val = event.target.value;
-    setCode(val);
-  };
+    const handleChange = (event) => {
+      let val = event.target.value;
+      setCode(val);
+    };
 
   const handleSubmit = () => {
     axios(

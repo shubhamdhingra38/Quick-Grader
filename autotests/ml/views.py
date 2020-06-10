@@ -238,12 +238,8 @@ class PlagiarismDetection:
         PlagiarismDetection.vectorizer.fit(preprocessed_corpus)
         return PlagiarismDetection.vectorizer.transform(preprocessed_corpus)
 
-# def get_similar()
-
 
 def detect_plagiarism(corpus):
-    # corpus = ['This is a corpus of text',
-    #           'Unrelated things', 'This is another corpus of text']
     preprocessed_corpus_objects = []
     preprocessed_corpus = []
     for text in corpus:
@@ -266,7 +262,7 @@ def detect_plagiarism(corpus):
     # return HttpResponse("ml_info")
 
 
-def plagiarism_detection(request, quiz_id):
+def plagiarism_detection(request, quiz_code):
     """
     This is API endpoint that returns the JSON Response for plagiarism.
     ML API
@@ -279,16 +275,14 @@ def plagiarism_detection(request, quiz_id):
     5) Show results in Dashboard
 
     Arguments:
-        request {quiz_id} -- The ID of the Quiz for which to run the plagiarism detection
+        request {quiz_code} -- The code of the Quiz for which to run the plagiarism detection
 
     Returns:
         JSON Response -- Answers with plagiarism exceeding threshold
     """
     response = defaultdict(lambda: defaultdict(
         list))  # response -> similar responses
-    print(quiz_id)
-    quiz_id = int(quiz_id)
-    quiz = Quiz.objects.get(id=quiz_id)
+    quiz = Quiz.objects.get(code=quiz_code)
     responses = Response.objects.filter(test=quiz)
     print(len(responses))
     answers = []

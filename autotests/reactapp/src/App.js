@@ -8,7 +8,8 @@ import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Response from "./components/Dashboard/Response";
-import PlagiarismResults from "./components/Dashboard/Plagiarism";
+import PlagiarismResults from "./components/Dashboard/PlagiarismResults";
+import Plagiarism from "./components/Dashboard/Plagiarism";
 import AutoGrade from "./components/Dashboard/AutoGrade";
 import CreatedTests from "./components/Dashboard/CreatedTests";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -37,13 +38,17 @@ class App extends React.Component {
             <Route exact path="/dashboard/created-tests">
               <CreatedTests />
             </Route>
-            <Route path="/dashboard/analyze/generate-report" component={GenerateReport} ></Route>
+            <Route path="/dashboard/generate-report" component={GenerateReport} ></Route>
             <Route
               path="/dashboard/created-tests/response/:responseID"
               component={Response}
             />
             <Route
-              path="/dashboard/created-tests/plagiarism-results/:quizID"
+              path="/dashboard/plagiarism/"
+              component={Plagiarism}
+            />
+            <Route
+              path="/dashboard/plagiarism-results/:quizID"
               component={PlagiarismResults}
             />
             <Route

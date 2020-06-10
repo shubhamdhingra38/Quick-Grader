@@ -57,15 +57,19 @@ function ViewResponses(props) {
     return (
       <ListGroupItem
         key={data.id}
-        style={data.graded & 1 ? { backgroundColor: "rgba(200, 200, 200, 1)" } : null}
+        style={
+          data.graded & 1 ? { backgroundColor: "rgba(200, 200, 200, 1)" } : null
+        }
       >
         <div className="d-flex justify-content-between">
-        <Link to={"/dashboard/created-tests/response/" + data.id}>
-          {data.taken_by}
-        </Link>
-        {data.graded && <p className="lead mb-0" style={{fontSize: "1.0rem"}}>
-          Score: {data.total_score}
-        </p>}
+          <Link to={"/dashboard/created-tests/response/" + data.id}>
+            {data.taken_by}
+          </Link>
+          {data.graded && (
+            <p className="lead mb-0" style={{ fontSize: "1.0rem" }}>
+              Score: {data.total_score}
+            </p>
+          )}
         </div>
       </ListGroupItem>
     );
@@ -132,10 +136,6 @@ function Test(props) {
       promises.push(
         axios.get(api.choice_url + choices[choiceId], { auth: api.credentials })
       );
-      // .then(res => {
-      //     choicesInfo.push([data.id, data.choices]);
-      // })
-      // .catch(err => console.log(err.response));
     }
     Promise.all(promises).then((res) => {
       res.forEach((choice) => {
@@ -186,20 +186,17 @@ function Test(props) {
       });
 
       return (
-        <li
-          key={data.id}
-          className="my-3 list-group-item list-group-item-secondary"
-        >
+        <div key={data.id} className="my-3 bg-light p-3">
           <span style={{ fontSize: "1.2em" }}>
             Question {idx + 1}. {data.problem}
           </span>
-          <div className="choices">
+          <div className="choices mt-3">
             <ul>{questionChoices}</ul>
           </div>
           <div className="max-marks d-flex justify-content-end pr-1">
             Maximum Marks: {data.maximum_score}
           </div>
-        </li>
+        </div>
       );
     }
   });
@@ -217,9 +214,24 @@ function Test(props) {
     <Container className="test-form my-5 border p-3">
       <div className="info">
         <h3 className="display-4">{props.data.title}</h3>
-        <p className="lead">{props.data.description}</p>
+        <div className="d-flex justify-content-between">
+          <p className="lead">{props.data.description}</p>
+          <div className="code-share">
+            <p className="card" style={{ color: "black" }}>
+              {props.data.code}
+            </p>
+            <button
+              className="btn btn-sm btn-info"
+              onClick={() => navigator.clipboard.writeText(props.data.code)}
+            >
+              Copy
+            </button>
+          </div>
+        </div>
+
         <hr className="info-hr" />
       </div>
+
       <div className="list-group">{questionElements}</div>
 
       <div className="toolbar d-flex justify-content-end">
