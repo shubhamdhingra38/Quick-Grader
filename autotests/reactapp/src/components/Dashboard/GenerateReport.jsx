@@ -17,10 +17,10 @@ function GenerateReport() {
 
   // console.log(code);
 
-    const handleChange = (event) => {
-      let val = event.target.value;
-      setCode(val);
-    };
+  const handleChange = (event) => {
+    let val = event.target.value;
+    setCode(val);
+  };
 
   const handleSubmit = () => {
     axios(
@@ -44,23 +44,38 @@ function GenerateReport() {
 
   return (
     <Container>
-      {invalid && <Alert variant="danger" dismissible onClose={() => setInvalid(false)} >Invalid code!</Alert>}
+      {invalid && (
+        <Alert variant="danger" dismissible onClose={() => setInvalid(false)}>
+          Invalid code!
+        </Alert>
+      )}
 
-      <div className="invitation-code">
-        <p className="font-cursive ">
-          Enter the code quiz code for which you wish to download the report:
-        </p>
-        <div className="code-share">
+      <div className="invitation-code h-100 mt-5">
+        <div className="row align-items-center h-100">
+          <img
+            style={{ width: "50px" }}
+            className="content-image mx-3"
+            src={require("../static/images/csv.png")}
+          />
+          <p className="font-cursive">
+            Enter the code quiz code for which you wish to download the report:
+          </p>
+        </div>
+
+        <div className="justify-content-center d-flex">
           <input
             onChange={handleChange}
             type="text"
             value={code}
             name="code"
             id="code"
+            className="p-1 code-share mx-3"
+            style={{width: "160px"}}
           />
           <button onClick={handleSubmit} className="btn btn-sm btn-success">
             Download
           </button>
+      
         </div>
       </div>
     </Container>

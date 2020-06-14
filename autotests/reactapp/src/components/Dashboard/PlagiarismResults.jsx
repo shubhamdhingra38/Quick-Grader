@@ -12,8 +12,12 @@ import {
 import Response from "./Response";
 import { Link } from "react-router-dom";
 
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = "csrftoken";
+
 const api = {
   // http://localhost:8000/ml/detect-plagiarism/287 for quiz 287
+  set_plagiarism: "http://localhost:8000/test/quiz/plagiarize/",
   plagiarism_detection_url: "http://localhost:8000/ml/detect-plagiarism/",
   response_url: "http://localhost:8000/test/response/",
   credentials: {
@@ -24,10 +28,12 @@ const api = {
 
 function Similar(props) {
   const [similarResponses, setSimilarResponses] = useState();
+  const [flagStatus, setFlagStatus] = useState({});
 
   let similarResponseElements = Object.keys(props.similar).map((ele) => {
+    if (flagStatus[ele] == undefined) flagStatus[ele] = false;
     return (
-      <div key={ele}>
+      <div key={ele} className="test-form w-25 d-flex justify-content-between">
         <Button
           variant="link"
           onClick={() => {
@@ -37,16 +43,59 @@ function Similar(props) {
         >
           {props.responses ? props.responses[ele] : "Loading..."}
         </Button>
-        {/* <Response responseID={ele} matchingResponses={props.similar[ele]} /> */}
-        {/* <Link
-          to={{
-            pathname: "/dashboard/created-tests/response/" + ele,
-            matchingResponses: props.similar[ele],
-          }}
-        >
-          {props.responses ? props.responses[ele] : "Loading..."}
-        </Link> */}
-        <br />
+        <div>
+          {/* Mark as true positive */}
+          <button
+            className="btn btn-transparent"
+            onClick={() => {
+              props.setPlagiarism((oldValue) => {
+                return { ...oldValue, [ele]: true, [props.parent]: true };
+              });
+              props.setCompareTo(null);
+              props.setCompareWith(null);
+              flagStatus[ele] = true;
+            }}
+          >
+            {flagStatus[ele] ? (
+              <img
+                style={{ color: "red !important" }}
+                style={{ height: "25px" }}
+                className="content-image mx-0 mt-2"
+                src={require("../static/images/flag_red.png")}
+              />
+            ) : (
+              <img
+                style={{ color: "red !important" }}
+                style={{ height: "25px" }}
+                className="content-image mx-0 mt-2"
+                src={require("../static/images/flag.png")}
+              />
+            )}
+          </button>
+          {/* Discard as false positive */}
+          <button
+            className="btn btn-transparent"
+            onClick={() => {
+              props.setPlagiarism((oldValue) => {
+                return { ...oldValue, [ele]: false, [props.parent]: false };
+              });
+              props.setSimilar((oldState) => {
+                let newState = { ...oldState };
+                delete newState[ele];
+                delete newState[props.parent];
+                return newState;
+              });
+              props.setCompareTo(null);
+              props.setCompareWith(null);
+            }}
+          >
+            <img
+              style={{ height: "25px" }}
+              className="content-image mx-0 mt-2"
+              src={require("../static/images/close.png")}
+            />
+          </button>
+        </div>
       </div>
     );
   });
@@ -66,20 +115,19 @@ function Similar(props) {
 function PlagiarismResults({ match }) {
   document.title = "Plagiarism";
 
+  const [plagiarism, setPlagiarism] = useState([]);
   const [results, setResults] = useState();
+  // const [countSimilar, setCountSimilar] = useState({});
   const [similar, setSimilar] = useState();
   const [responses, setResponses] = useState();
   const [errorMsg, setErrorMsg] = useState([]);
   const [compareTo, setCompareTo] = useState(null);
   const [compareWith, setCompareWith] = useState(null);
 
+  console.log(similar);
+  // console.log(countSimilar);
 
-  // console.log(responses);
-
-  // console.log(similar);
-  console.log(compareTo);
-  // console.log(compareTo ? similar[compareTo] : "wait");
-
+  // console.log(plagiarism);
   // console.log(similar);
   useEffect(() => {
     axios
@@ -90,6 +138,9 @@ function PlagiarismResults({ match }) {
         // console.log(res);
         setResults(res.data);
         Object.keys(res.data).forEach((responseID) => {
+          // setCountSimilar((oldValue) => {
+          //   return { ...oldValue, [responseID]: res.data[responseID] };
+          // });
           axios
             .get(api.response_url + responseID, { auth: api.credentials })
             .then((result) => {
@@ -110,6 +161,21 @@ function PlagiarismResults({ match }) {
   useEffect(() => {
     setSimilar(results);
   }, [results]);
+
+  const handleClick = () => {
+    console.log("clicked");
+    console.log(plagiarism);
+    Object.keys(plagiarism).forEach((responseID) => {
+      if (plagiarism[responseID]) {
+        axios
+          .post(api.set_plagiarism + responseID + "/", {
+            auth: api.credentials,
+          })
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      }
+    });
+  };
 
   let alertElements = errorMsg.map((ele, index) => {
     return <li key={index}>{ele}</li>;
@@ -142,8 +208,10 @@ function PlagiarismResults({ match }) {
               parent={ele}
               similar={matchingResponses}
               responses={responses}
+              setSimilar={setSimilar}
               setCompareTo={setCompareTo}
               setCompareWith={setCompareWith}
+              setPlagiarism={setPlagiarism}
             />
           </Tab.Pane>
         );
@@ -158,9 +226,20 @@ function PlagiarismResults({ match }) {
                 : "list-group-item-success"
             }
           >
-            {`${responses ? responses[ele] : "Loading..."} found ${
-              Object.keys(matchingResponses).length
-            } similar instances`}
+            {`${
+              responses ? (
+                responses[ele]
+              ) : (
+                <div className={"body-text"}>
+                  Loading...
+                  <img
+                    style={{ width: "30px" }}
+                    className="content-image mx-3"
+                    src={require("../static/images/loading.png")}
+                  />
+                </div>
+              )
+            } found ${Object.keys(matchingResponses).length} similar instances`}
           </ListGroup.Item>
         );
       })
@@ -169,25 +248,50 @@ function PlagiarismResults({ match }) {
   // console.log(studentListElements);
 
   let rightComparison = compareTo ? (
-    <Response responseID={compareTo} matchingResponses={similar[compareTo]} plag/>
+    <Response
+      responseID={compareTo}
+      matchingResponses={similar[compareTo]}
+      plag
+    />
   ) : null;
 
   let leftComparison = compareWith ? (
-    <Response responseID={compareWith} matchingResponses={similar[compareTo]} plag/>
+    <Response
+      responseID={compareWith}
+      matchingResponses={similar[compareTo]}
+      plag
+    />
   ) : null;
 
   return (
     <Container>
       {/* Error messages */}
       {alert}
-      <div>Plagiarism Results:</div>
+      <div className="body-text">Plagiarism Results:</div>
       <Tab.Container id="list-group-tabs">
         <ListGroup className="d-flex justify-content-center flex-column m-2">
-          {studentListElements ? studentListElements : "Loading..."}
+          {studentListElements ? (
+            studentListElements
+          ) : (
+            <div className={"body-text"}>
+              Loading...
+              <img
+                style={{ width: "30px" }}
+                className="content-image mx-3"
+                src={require("../static/images/loading.png")}
+              />
+            </div>
+          )}
         </ListGroup>
         <Tab.Content className="m-2">{linkElements}</Tab.Content>
       </Tab.Container>
-      <Row className="row-eq-height">
+
+      {responses ? (
+        <Button onClick={handleClick} className="d-flex float-right mr-2">
+          Save
+        </Button>
+      ) : null}
+      <Row className="row-eq-height mt-5">
         <Col>{leftComparison}</Col>
         <Col>{rightComparison}</Col>
       </Row>

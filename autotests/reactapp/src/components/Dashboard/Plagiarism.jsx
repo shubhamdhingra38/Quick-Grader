@@ -21,24 +21,36 @@ function Plagiarism() {
         </Alert>
       )}
 
-      <div className="invitation-code">
-        <p className="font-cursive ">
+
+<div className="invitation-code h-100 mt-5">
+        <div className="row align-items-center h-100">
+          <img
+            style={{ width: "60px" }}
+            className="content-image mx-3"
+            src={require("../static/images/copyright.png")}
+          />
+          <p className="font-cursive">
           Enter the code quiz code for which you wish to analyze instances of plagiarism:
-        </p>
-        <div className="code-share">
+          </p>
+        </div>
+
+        <div className="justify-content-center d-flex">
           <input
             onChange={handleChange}
             type="text"
             value={code}
             name="code"
             id="code"
-            style={{width: "200px"}}
+            className="p-1 code-share mx-3"
+            style={{width: "160px"}}
           />
           <Link to={`/dashboard/plagiarism-results/${code}`}>
-            Detect
+            <button className="btn btn-sm btn-success" style={{height: "35px"}}>Detect</button>
           </Link>
         </div>
       </div>
+
+
     </Container>
   );
 }

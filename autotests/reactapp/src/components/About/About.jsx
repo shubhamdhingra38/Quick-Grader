@@ -13,7 +13,7 @@ function About(props){
          <p className={" font-cursive "}>
            Through use of Artificial Intelligence, two key features are included.
          </p>
-           <ul className={"  font-cursive "}>
+           <ul className={"font-cursive", "ml-3"}>
              <li>
                Plagiarism Detection
              </li>
@@ -27,7 +27,7 @@ function About(props){
               <p className={"mt-3 m-3"}><span style={{color: "green"}}>Hierarchical Clustering</span> is used for grouping together of answers submitted
               by the students. This enables the teacher to only manually grade a few points in the cluster (around the center) and other points belonging to that cluster
               can be graded through the score assigned to the nearest point.</p>
-              <p className={"mt-3 m-3"}>Content Similarity is done by use of pre-trained sentence embedding model called <span style={{color: "green"}}>Universal Sentence Encoder </span> - provided by Google.</p>
+              <p className={"mt-3 m-3"}>Content Similarity is done by use of pre-trained sentence embedding model called <span style={{color: "green"}}>Universal Sentence Encoder </span> - by Google.</p>
             </div>
           <br/>
           </div>

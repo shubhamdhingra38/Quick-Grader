@@ -57,6 +57,7 @@ class Response(models.Model):
     taken_by = models.ForeignKey(User, on_delete=models.CASCADE)
     total_score = models.IntegerField(default=0)
     graded = models.BooleanField(default=False)
+    plag = models.BooleanField(default=False)
 
     def __str__(self):
         return self.test.title + ":" + self.taken_by.__str__()

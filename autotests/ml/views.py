@@ -489,3 +489,5 @@ def calculate_total_score(quiz_id):
                 answer.response.total_score = total_scores[answer.response.taken_by.username]
                 answer.response.save()
     print(total_scores)
+
+

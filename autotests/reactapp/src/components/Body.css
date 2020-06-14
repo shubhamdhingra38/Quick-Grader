@@ -17,13 +17,10 @@ body{
     position: relative;
     margin-left: 100px !important;
     font-weight: 300 !important;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 body, body * {
     font-family: 'Pangolin', cursive;
 }
 
-.font-cursive, .font-cursive *{
-    font-family: 'Cedarville Cursive', cursive;
-}

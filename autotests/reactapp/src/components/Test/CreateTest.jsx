@@ -444,7 +444,7 @@ function AddQuestions(props) {
       <Container className="border test-form p-3" style={{ minHeight: "80vh" }}>
         {/* Info about Quiz */}
         <div className="info">
-          <h3 className="display-4">{props.title}</h3>
+          <h3 className="display-3">{props.title}</h3>
           <p className="lead">{props.desc}</p>
           <hr className="info-hr" />
         </div>
@@ -468,7 +468,7 @@ function AddQuestions(props) {
         {allowSubmit && (
           <button
             onClick={handleSubmit}
-            className="my-3 btn btn-md btn-success"
+            className="my-3 btn btn-md btn-success float-right"
           >
             Submit
           </button>
@@ -479,6 +479,7 @@ function AddQuestions(props) {
 }
 
 function CreateTest(props) {
+  document.title = "Create Test";
   let { path, url } = useRouteMatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -537,7 +538,7 @@ function CreateTest(props) {
     <Container className="mx-auto mt-5 border p-4 rounded test-creation">
       <Form>
         <Form.Group controlId="formTitle">
-          <Form.Label>Title</Form.Label>
+          <Form.Label style={{fontSize: "1.3rem"}}>Title</Form.Label>
           <Form.Control
             type="text"
             value={title}
@@ -551,7 +552,7 @@ function CreateTest(props) {
         </Form.Group>
 
         <Form.Group controlId="formDescription">
-          <Form.Label name="title">Description</Form.Label>
+          <Form.Label name="title" style={{fontSize: "1.3rem"}}>Description</Form.Label>
           <Form.Control
             as="textarea"
             value={description}

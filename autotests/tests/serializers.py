@@ -137,7 +137,7 @@ class ResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Response
-        fields = ('id', 'test', 'taken_by', 'graded', 'total_score',)
+        fields = ('id', 'test', 'taken_by', 'graded', 'total_score', 'plag',)
 
     def validate_test(self, value):
         # do not let the student attempt the test twice by creating multiple responses

@@ -21,6 +21,13 @@
     box-shadow: aquamarine;
     background-color: rgba(0, 100, 100, 0.13) !important;
     border-color: #abced4 !important;
+    border-width: 2px !important; 
+}
+
+.test-form-rounded{
+    box-shadow: aquamarine;
+    background-color: rgba(0, 100, 100, 0.13) !important;
+    border-color: #abced4 !important;
     border-radius: 5px;
     border-width: 2px !important; 
 }
@@ -46,8 +53,8 @@ hr{
 }
 
 .code-share{
+    height: 35px !important;
     position: relative;
-    margin-left: 100px !important;
     display: flex;
     flex-wrap: wrap;
 }

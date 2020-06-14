@@ -87,7 +87,14 @@ function Response(props) {
           answers={answers}
         />
       ) : (
-        "Loading..."
+        <div className={"body-text"}>
+      Loading...
+      <img
+        style={{ width: "30px" }}
+        className="content-image mx-3"
+        src={require("../static/images/loading.png")}
+      />
+    </div>
       )}
     </>
   );
@@ -226,7 +233,7 @@ function Test(props) {
             : "list-group-item-seconday";
       else className += "list-group-item-secondary";
       return (
-        <div className="response" key={data.id}>
+        <div className="responses" key={data.id}>
           <li key={data.id} className={className}>
             <span style={{ fontSize: "1.2em" }}>
               Question {idx + 1}. {data.problem}
@@ -329,7 +336,7 @@ function Test(props) {
         </div>
         {showToast ? toast : null}
         {questionElements}
-        <Button onClick={handleSubmit} className="btn btn-md btn-success">
+        <Button onClick={handleSubmit} className="btn btn-md btn-success mt-2">
           Grade
         </Button>
       </div>

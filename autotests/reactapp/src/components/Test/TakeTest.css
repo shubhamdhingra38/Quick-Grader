@@ -9,7 +9,6 @@
 }
 .list-group-item-secondary{
     background-color: rgba(255, 255, 255, 0.8);
-    border-width: 2px;
     border-color: rgba(0, 0, 0, 0.5);
-    border-radius: 15px;
+    border-radius: 3px !important;
 }

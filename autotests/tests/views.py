@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 from ml.views import grade_others_in_cluster
 import csv
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 class QuizListView(viewsets.ModelViewSet):
@@ -246,3 +247,13 @@ def get_report(request, code):
         return JsonResponse({"message": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
 
     return response
+
+@csrf_exempt 
+def set_plagiarism(request, response_id):   
+    try:
+        response = Response.objects.get(id=int(response_id))
+        response.plag = True
+        response.save()
+    except ObjectDoesNotExist:
+        return JsonResponse({"message": "The code entered was incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse({"message": f"Successfully marked the response as plagiarized"}, status=status.HTTP_200_OK)
