@@ -14,11 +14,7 @@ const api = {
   grade_url: "http://localhost:8000/test/grade/",
   grade_others_url: "http://localhost:8000/ml/grade-others/",
   // http://localhost:8000/ml/semi-auto-grader/314
-  semi_grade_url: "http://localhost:8000/ml/semi-auto-grader/",
-  credentials: {
-    username: "ateacher",
-    password: "password",
-  },
+  semi_grade_url: "http://localhost:8000/ml/semi-auto-grader/"
 };
 
 function AutoGrade(props) {
@@ -39,15 +35,20 @@ function AutoGrade(props) {
   useEffect(() => {
     axios
       .get(api.semi_grade_url + props.match.params.quizID, {
-        auth: api.credentials,
-      })
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },      })
       .then((res) => {
         console.log(res);
         let data = res.data;
         setQuestionAnswerMapping(data);
         for (let q_id in data) {
           axios
-            .get(api.question_url + q_id, { auth: api.credentials })
+            .get(api.question_url + q_id, {      headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${props.token}`,
+            }, })
             .then((res) => {
               //   console.log(res);
               setQuestions((oldState) => {
@@ -58,7 +59,10 @@ function AutoGrade(props) {
           let answer_ids = data[q_id];
           answer_ids.forEach((id) => {
             axios
-              .get(api.answer_url + id, { auth: api.credentials })
+              .get(api.answer_url + id, {      headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${props.token}`,
+              }, })
               .then((res) => {
                 // console.log(res);
                 setAnswers((oldState) => {
@@ -100,7 +104,10 @@ function AutoGrade(props) {
             grade: marks[key],
             type: 2,
           },
-          { auth: api.credentials }
+          {      headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          }, }
         )
       );
     });
@@ -109,7 +116,10 @@ function AutoGrade(props) {
         console.log("done here");
         axios
           .get(api.grade_others_url + props.match.params.quizID, {
-            auth: api.credentials,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${props.token}`,
+            },
           })
           .then((res) => {
             console.log(res);

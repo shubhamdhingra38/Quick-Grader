@@ -5,7 +5,7 @@ import {Container} from "react-bootstrap";
 function About(props){
     document.title = "About";
     return (
-        <Container  className="body-text" style={{fontSize: "1.5rem"}}>
+        <Container  className="body-text" style={{fontSize: "1.3rem"}}>
           <p className={" font-cursive mt-3"}>
              This project aims to provide an <span style={{color: "red"}}>automated</span> manner in which students can be evaluated. Inspired by the need of
           a <span style={{color: "red"}}> simplistic platform</span> which can be used for academic purpose during the pandemic.

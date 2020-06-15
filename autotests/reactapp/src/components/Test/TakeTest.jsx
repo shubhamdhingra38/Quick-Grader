@@ -7,18 +7,16 @@ import { Container, Alert } from "react-bootstrap";
 const api = {
   quiz_url: "http://localhost:8000/test/quiz/instance/",
   response_url: "http://localhost:8000/test/response/",
-  credentials: {
-    username: "userhere",
-    password: "password123@",
-  },
 };
 
-function TakeTest() {
+function TakeTest(props) {
   const [status, setStatus] = useState({ code: "", submitted: false });
   const [quizDetail, setQuizDetail] = useState({});
   const [response, setResponse] = useState();
   const [wrongMsg, setWrongMsg] = useState(null);
   const [didMount, setDidMount] = useState(false);
+
+  console.log(props.token);
 
   // can only create one response per test for a student
   const createResponse = (id) => {
@@ -29,7 +27,10 @@ function TakeTest() {
           test: id,
         },
         {
-          auth: api.credentials,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
         }
       )
       .then((res) => {
@@ -58,7 +59,10 @@ function TakeTest() {
     console.log(api.quiz_url + status.code + "/");
     axios
       .get(api.quiz_url + status.code, {
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         if (res.data.locked) {

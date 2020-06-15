@@ -3,19 +3,17 @@ import axios from "axios";
 import "./Body.css";
 import { Link } from "react-router-dom";
 
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.xsrfCookieName = "csrftoken";
+// axios.defaults.xsrfHeaderName = "X-CSRFToken";
+// axios.defaults.xsrfCookieName = "csrftoken";
 
 const api = {
-  quiz_url: "http://localhost:8000/auth/user/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
+  auth_url: "http://localhost:8000/auth/user/",
 };
 
-function Body() {
+function Body(props) {
+  // console.log(props);
   document.title = "Home";
+
   const [welcomeMsg, setWelcomeMsg] = useState({
     loading: true,
     msg: "",
@@ -23,8 +21,11 @@ function Body() {
   });
   useEffect(() => {
     axios
-      .get(api.quiz_url, {
-        auth: api.credentials,
+      .get(api.auth_url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         setWelcomeMsg({
@@ -33,7 +34,8 @@ function Body() {
           group: res.data.group,
         });
         console.log(res.data);
-      });
+      })
+      .catch((err) => console.log(err.response));
   }, []);
 
   let btnText =
@@ -65,7 +67,7 @@ function Body() {
     </div>
   );
   let msg = welcomeMsg.loading ? (
-    <div className={"body-text"}>
+    <div>
       Loading...
       <img
         style={{ width: "30px" }}
@@ -76,8 +78,9 @@ function Body() {
   ) : (
     info
   );
+  let body = props.token ? msg : <div>Welcome to quickgrader!</div>;
 
-  return <div className="m-3 body-text">{msg}</div>;
+  return <div className="body-text mt-5">{body}</div>;
 }
 
 export default Body;

@@ -6,8 +6,8 @@ from .models import Profile
 from rest_framework.response import Response
 # from rest_framework import status
 # from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework import viewsets, mixins
 
 
@@ -17,14 +17,13 @@ class UserView(mixins.CreateModelMixin,
                    viewsets.GenericViewSet):
     queryset = Profile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny, ]
-    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+    # authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
     
 class UserInstanceView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
 
     def get(self, request):
         p = Profile.objects.get(user=request.user)

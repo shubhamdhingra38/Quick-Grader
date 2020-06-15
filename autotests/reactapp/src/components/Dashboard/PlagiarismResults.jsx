@@ -7,7 +7,10 @@ import {
   Col,
   ListGroup,
   Row,
+  Card,
   Container,
+  CardGroup,
+  CardDeck,
 } from "react-bootstrap";
 import Response from "./Response";
 import { Link } from "react-router-dom";
@@ -20,18 +23,14 @@ const api = {
   set_plagiarism: "http://localhost:8000/test/quiz/plagiarize/",
   plagiarism_detection_url: "http://localhost:8000/ml/detect-plagiarism/",
   response_url: "http://localhost:8000/test/response/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
 };
 
 function Similar(props) {
   const [similarResponses, setSimilarResponses] = useState();
-  const [flagStatus, setFlagStatus] = useState({});
+  // const [flagStatus, setFlagStatus] = useState({});
 
   let similarResponseElements = Object.keys(props.similar).map((ele) => {
-    if (flagStatus[ele] == undefined) flagStatus[ele] = false;
+    // if (flagStatus[ele] == undefined) flagStatus[ele] = false;
     return (
       <div key={ele} className="test-form w-25 d-flex justify-content-between">
         <Button
@@ -53,10 +52,9 @@ function Similar(props) {
               });
               props.setCompareTo(null);
               props.setCompareWith(null);
-              flagStatus[ele] = true;
             }}
           >
-            {flagStatus[ele] ? (
+            {props.plagiarism[ele] ? (
               <img
                 style={{ color: "red !important" }}
                 style={{ height: "25px" }}
@@ -81,8 +79,9 @@ function Similar(props) {
               });
               props.setSimilar((oldState) => {
                 let newState = { ...oldState };
-                delete newState[ele];
-                delete newState[props.parent];
+                delete newState[props.parent][ele];
+                delete newState[ele][props.parent];
+                console.log(newState);
                 return newState;
               });
               props.setCompareTo(null);
@@ -112,9 +111,10 @@ function Similar(props) {
   return <div className="mt-3">No matching responses</div>;
 }
 
-function PlagiarismResults({ match }) {
+function PlagiarismResults(props) {
   document.title = "Plagiarism";
 
+  console.log(props);
   const [plagiarism, setPlagiarism] = useState([]);
   const [results, setResults] = useState();
   // const [countSimilar, setCountSimilar] = useState({});
@@ -124,15 +124,17 @@ function PlagiarismResults({ match }) {
   const [compareTo, setCompareTo] = useState(null);
   const [compareWith, setCompareWith] = useState(null);
 
-  console.log(similar);
+  // console.log(similar);
   // console.log(countSimilar);
 
   // console.log(plagiarism);
   // console.log(similar);
   useEffect(() => {
     axios
-      .get(api.plagiarism_detection_url + match.params.quizID, {
-        auth: api.credentials,
+      .get(api.plagiarism_detection_url + props.match.params.quizID, {
+        headers: {
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         // console.log(res);
@@ -142,7 +144,11 @@ function PlagiarismResults({ match }) {
           //   return { ...oldValue, [responseID]: res.data[responseID] };
           // });
           axios
-            .get(api.response_url + responseID, { auth: api.credentials })
+            .get(api.response_url + responseID, {
+              headers: {
+                Authorization: `Token ${props.token}`,
+              },
+            })
             .then((result) => {
               // console.log(result);
               setResponses((oldValue) => {
@@ -169,7 +175,10 @@ function PlagiarismResults({ match }) {
       if (plagiarism[responseID]) {
         axios
           .post(api.set_plagiarism + responseID + "/", {
-            auth: api.credentials,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${props.token}`,
+            },
           })
           .then((res) => console.log(res))
           .catch((err) => console.log(err));
@@ -205,7 +214,9 @@ function PlagiarismResults({ match }) {
         linkElements.push(
           <Tab.Pane key={index} eventKey={`#link${index}`}>
             <Similar
+              token={props.token}
               parent={ele}
+              plagiarism={plagiarism}
               similar={matchingResponses}
               responses={responses}
               setSimilar={setSimilar}
@@ -227,18 +238,7 @@ function PlagiarismResults({ match }) {
             }
           >
             {`${
-              responses ? (
-                responses[ele]
-              ) : (
-                <div className={"body-text"}>
-                  Loading...
-                  <img
-                    style={{ width: "30px" }}
-                    className="content-image mx-3"
-                    src={require("../static/images/loading.png")}
-                  />
-                </div>
-              )
+              responses && responses[ele] ? responses[ele] : "Loading..."
             } found ${Object.keys(matchingResponses).length} similar instances`}
           </ListGroup.Item>
         );
@@ -250,16 +250,20 @@ function PlagiarismResults({ match }) {
   let rightComparison = compareTo ? (
     <Response
       responseID={compareTo}
-      matchingResponses={similar[compareTo]}
+      matchingResponses={similar[compareTo][Object.keys(similar[compareTo])[0]]}
       plag
+      token={props.token}
     />
   ) : null;
 
   let leftComparison = compareWith ? (
     <Response
       responseID={compareWith}
-      matchingResponses={similar[compareTo]}
+      matchingResponses={
+        similar[compareWith][Object.keys(similar[compareWith])[0]]
+      }
       plag
+      token={props.token}
     />
   ) : null;
 
@@ -285,16 +289,26 @@ function PlagiarismResults({ match }) {
         </ListGroup>
         <Tab.Content className="m-2">{linkElements}</Tab.Content>
       </Tab.Container>
-
       {responses ? (
-        <Button onClick={handleClick} className="d-flex float-right mr-2">
+        <Button onClick={handleClick} className="mx-2 my-2">
           Save
         </Button>
       ) : null}
-      <Row className="row-eq-height mt-5">
-        <Col>{leftComparison}</Col>
-        <Col>{rightComparison}</Col>
-      </Row>
+
+      {leftComparison && rightComparison && (
+        <div class="row test-form border">
+          <div class="col-sm-6 py-2">
+            <div class="card card-body h-100 bg-transparent">
+              {leftComparison}
+            </div>
+          </div>
+          <div class="col-sm-6 py-2">
+            <div class="card h-100 card-body bg-transparent">
+              {rightComparison}
+            </div>
+          </div>
+        </div>
+      )}
     </Container>
   );
 }

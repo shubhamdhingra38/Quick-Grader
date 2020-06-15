@@ -67,7 +67,7 @@ class Question(models.Model):
     test = models.ForeignKey(Quiz, related_name='questions', on_delete=models.CASCADE)
     type = models.IntegerField(choices=QUESTION_TYPE, default=1)
     problem = models.TextField()
-    ans = models.CharField(max_length=1000, blank=True)
+    ans = models.CharField(max_length=10000, blank=True)
     maximum_score = models.IntegerField(default=0)
 
     def __str__(self):
@@ -77,7 +77,7 @@ class Question(models.Model):
 # for the mcq type questions
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=50)
+    choice_text = models.CharField(max_length=100)
     is_answer = models.BooleanField(default=False)
 
     def __str__(self):
@@ -87,7 +87,7 @@ class Choice(models.Model):
 class Answer(models.Model):
     response = models.ForeignKey(Response, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    short_ans = models.CharField(max_length=1000, blank=True)
+    short_ans = models.CharField(max_length=10000, blank=True)
     choice_id = models.IntegerField(null=True, blank=True)
     score = models.IntegerField(default=0)
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'tests',
     # third party
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 ]
 

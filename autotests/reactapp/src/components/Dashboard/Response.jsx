@@ -19,10 +19,6 @@ const api = {
   // http://localhost:8000/test/answer/?responseID=36
   answer_url: "http://localhost:8000/test/answer/",
   grade_url: "http://localhost:8000/test/grade/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
 };
 
 function Response(props) {
@@ -41,13 +37,21 @@ function Response(props) {
   useEffect(() => {
     axios
       .get(api.response_url + responseID, {
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         // console.log(res);
         setStudentName(res.data.taken_by);
         axios
-          .get(api.quiz_url + res.data.test, { auth: api.credentials })
+          .get(api.quiz_url + res.data.test, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${props.token}`,
+            },
+          })
           .then((result) => {
             // console.log(result);
             setQuizInfo(result.data);
@@ -58,7 +62,10 @@ function Response(props) {
 
     axios
       .get(api.answer_url, {
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
         params: {
           responseID: responseID,
         },
@@ -80,6 +87,7 @@ function Response(props) {
     <>
       {quizInfo ? (
         <Test
+          token={props.token}
           responseID={responseID}
           name={studentName}
           matchingResponses={props.matchingResponses}
@@ -88,13 +96,13 @@ function Response(props) {
         />
       ) : (
         <div className={"body-text"}>
-      Loading...
-      <img
-        style={{ width: "30px" }}
-        className="content-image mx-3"
-        src={require("../static/images/loading.png")}
-      />
-    </div>
+          Loading...
+          <img
+            style={{ width: "30px" }}
+            className="content-image mx-3"
+            src={require("../static/images/loading.png")}
+          />
+        </div>
       )}
     </>
   );
@@ -110,12 +118,19 @@ function Test(props) {
   const [errorMsg, setErrorMsg] = useState([]);
   const [showToast, setShowToast] = useState(false);
 
+  console.log(props.matchingResponses);
   // console.log(marks);
+  // console.log(props.token);
 
   useEffect(() => {
     props.data.questions.forEach((questionID, index) => {
       axios
-        .get(api.question_url + questionID, { auth: api.credentials })
+        .get(api.question_url + questionID, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
+        })
         .then((res) => {
           setQuestions((prevQuestions) => {
             return [...prevQuestions, res.data];
@@ -137,7 +152,12 @@ function Test(props) {
     for (choiceId in choices) {
       // console.log(api.choice_url + choices[choiceId]);
       promises.push(
-        axios.get(api.choice_url + choices[choiceId], { auth: api.credentials })
+        axios.get(api.choice_url + choices[choiceId], {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
+        })
       );
     }
     Promise.all(promises).then((res) => {
@@ -162,7 +182,9 @@ function Test(props) {
     console.log(JSON.stringify(obj));
     axios
       .post(api.grade_url, obj, {
-        auth: api.credentials,
+        headers: {
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         console.log(res);
@@ -227,11 +249,25 @@ function Test(props) {
       let className = "my-3 list-group-item ";
       // console.log(props);
       if (props.matchingResponses)
-        className +=
-          props.matchingResponses == data.id
-            ? "list-group-item-danger"
-            : "list-group-item-seconday";
+        className += props.matchingResponses.includes(data.id)
+          ? "list-group-item-danger"
+          : "list-group-item-seconday";
       else className += "list-group-item-secondary";
+      let marksEle = (
+        <div className="max-score mt-2">
+          <label htmlFor={id}>Marks:</label>
+          <input
+            id={id}
+            value={marks[id]}
+            onChange={(e) => handleChange(e, data.maximum_score)}
+            className="ml-1"
+            style={{ width: "33px" }}
+            type="text"
+            name="score"
+          />
+          <label htmlFor={id}>/{data.maximum_score}</label>
+        </div>
+      );
       return (
         <div className="responses" key={data.id}>
           <li key={data.id} className={className}>
@@ -244,19 +280,7 @@ function Test(props) {
               </p>
             </div>
           </li>
-          <div className="max-score mt-2">
-            <label htmlFor={id}>Marks:</label>
-            <input
-              id={id}
-              value={marks[id]}
-              onChange={(e) => handleChange(e, data.maximum_score)}
-              className="ml-1"
-              style={{ width: "33px" }}
-              type="text"
-              name="score"
-            />
-            <label htmlFor={id}>/{data.maximum_score}</label>
-          </div>
+          {marksEle}
         </div>
       );
     } else {
@@ -324,10 +348,11 @@ function Test(props) {
     ) : null;
 
   if (redirect) return <Redirect to="/dashboard/created-tests/" />;
+  let borderClass = !props.plag ? null : "test-form";
   return (
     <Container>
       {alert}
-      <div className="border test-form p-3 mt-3">
+      <div className={`${borderClass} p-3 mt-3`}>
         <div className="info">
           <h3 className="display-4">{props.data.title}</h3>
           <p className="lead">{props.data.description}</p>
@@ -336,9 +361,12 @@ function Test(props) {
         </div>
         {showToast ? toast : null}
         {questionElements}
-        <Button onClick={handleSubmit} className="btn btn-md btn-success mt-2">
-          Grade
-        </Button>
+          <Button
+            onClick={handleSubmit}
+            className="btn btn-md btn-success mt-2"
+          >
+            Grade
+          </Button>
       </div>
     </Container>
   );

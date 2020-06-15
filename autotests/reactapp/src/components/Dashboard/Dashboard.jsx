@@ -16,7 +16,6 @@ import {
 } from "react-bootstrap";
 import CreatedTests from "./CreatedTests";
 
-
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
@@ -28,26 +27,10 @@ const api = {
   response_url: "http://localhost:8000/test/response/",
   // http://localhost:8000/test/answer/?responseID=36
   answer_url: "http://localhost:8000/test/answer/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
 };
 function Dashboard(props) {
   console.log(props);
   document.title = "Dashboard";
-  const [showTests, setShowTests] = useState(false);
-
-  const handleShowTests = (e) => {
-    setShowTests((oldValue) => !oldValue);
-    // localStorage.setItem('showTests', false);
-  };
-
-  if (showTests) {
-    return (
-        <Redirect to="/dashboard/created-tests/" />
-    );
-  }
 
   return (
     <Container>
@@ -64,7 +47,8 @@ function Dashboard(props) {
               <div className="content-details fadeIn-top fadeIn-left">
                 <h3>Generate Report</h3>
                 <p>
-                  Get the detailed result of students, their performance in each question and a total score in .csv format
+                  Get the detailed result of students, their performance in each
+                  question and a total score in .csv format
                 </p>
               </div>
             </Link>
@@ -73,7 +57,7 @@ function Dashboard(props) {
         <div className="container col-md-5 col-sm-12">
           <h3 className="title">Grade</h3>
           <div className="content w-100">
-            <Button variant="link" onClick={handleShowTests}>
+            <Link to="/dashboard/created-tests/">
               <div className="content-overlay"></div>
               <img
                 className="content-image w-100 mx-3"
@@ -86,7 +70,7 @@ function Dashboard(props) {
                   and report cases of plagiarism
                 </p>
               </div>
-            </Button>
+            </Link>
           </div>
         </div>
 
@@ -102,7 +86,9 @@ function Dashboard(props) {
               <div className="content-details fadeIn-top">
                 <h3>Plagiarism Detection</h3>
                 <p>
-                  Use AI to report cases of plagiarism between pairs of students and analyze the suspected similar answers to eliminate any false positives
+                  Use AI to report cases of plagiarism between pairs of students
+                  and analyze the suspected similar answers to eliminate any
+                  false positives
                 </p>
               </div>
             </Link>
@@ -110,8 +96,7 @@ function Dashboard(props) {
         </div>
       </div>
 
-      <div className="body-text">
-      </div>
+      <div className="body-text"></div>
     </Container>
   );
 }

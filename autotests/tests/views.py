@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response as APIResponse
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from .models import Quiz, Question, Choice, Answer, Response
 from rest_framework import viewsets, mixins
 from rest_framework.views import APIView
@@ -22,7 +22,7 @@ class QuizListView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
 
     # def list(self, request, pk=None):
     #     if pk:
@@ -66,7 +66,8 @@ class QuizInstanceView(generics.RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
     lookup_field = 'code'
 
     def get(self, request, code=None):
@@ -82,7 +83,8 @@ class QuizInstanceView(generics.RetrieveAPIView):
 class QuestionListView(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -94,7 +96,8 @@ class ChoiceView(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
 
 
 class AnswerView(mixins.CreateModelMixin,
@@ -104,7 +107,8 @@ class AnswerView(mixins.CreateModelMixin,
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
 
     def list(self, request):
         if len(request.query_params) == 0:
@@ -121,7 +125,8 @@ class ResponseView(viewsets.ModelViewSet):
     queryset = Response.objects.all()
     serializer_class = ResponseSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
 
     def list(self, request):
         if len(request.query_params) == 0:
@@ -138,6 +143,9 @@ class CreatedTestsView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
+
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def list(self, request):
@@ -160,7 +168,11 @@ class Grade(APIView):
     {"grade":{"107":"7","108":"4"},"responseID":"54", "type":1}
     where each key in 'grade' is an questionID and the corresponding value is the score
     """
-
+    
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication,
+                              TokenAuthentication, BasicAuthentication]
+                              
     def post(self, request):
         type_grading = int(request.data['type'])
         try:
@@ -174,7 +186,7 @@ class Grade(APIView):
                     if answer.question.type == 2:  # MCQ
                         if Choice.objects.get(id=answer.choice_id).is_answer:
                             total_score += answer.question.maximum_score
-                            answer.score += answer.question.maximum_score
+                            answer.score = answer.question.maximum_score
                             answer.save()
                 # print(answers)
                 grades = request.data['grade']
@@ -211,6 +223,7 @@ def lock_unlock_quiz(request, code):
         return JsonResponse({"message": "Unable to lock the quiz, the code entered was incorrect"}, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse({"message": f"Successfully {action} the quiz"}, status=status.HTTP_200_OK)
 
+
 def get_report(request, code):
     """
     Generates the response for downloading a .csv file of the responses to some quiz.
@@ -228,6 +241,7 @@ def get_report(request, code):
         quiz = Quiz.objects.get(code=code)
         questions = Question.objects.filter(test=quiz).order_by('id')
         titles += [f'Question{i+1}' for i in range(len(questions))]
+        titles += ['Plagiarism', 'Total Score']
         print(titles)
         responses = Response.objects.filter(test=quiz)
         print(responses[0].taken_by.get_full_name())
@@ -240,6 +254,7 @@ def get_report(request, code):
             r = [i, res.taken_by.get_full_name()]
             for answer in answers:
                 r += [answer.score]
+            r += [res.plag, res.total_score]
             print(r)
             writer.writerow(r)
     except Exception as e:
@@ -248,8 +263,9 @@ def get_report(request, code):
 
     return response
 
-@csrf_exempt 
-def set_plagiarism(request, response_id):   
+
+@csrf_exempt
+def set_plagiarism(request, response_id):
     try:
         response = Response.objects.get(id=int(response_id))
         response.plag = True

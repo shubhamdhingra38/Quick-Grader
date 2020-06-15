@@ -21,10 +21,6 @@ const api = {
   choice_url: "http://localhost:8000/test/choice/",
   response_url: "http://localhost:8000/test/response/",
   question_url: "http://localhost:8000/test/question/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
 };
 
 function ShortAnswerQuestion(props) {
@@ -318,7 +314,10 @@ function AddQuestions(props) {
             maximum_score: parseInt(maxMarks[property]),
           },
           {
-            auth: api.credentials,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${props.token}`,
+            },
           }
         )
         .then((res) => {
@@ -339,7 +338,12 @@ function AddQuestions(props) {
                     choice_text: ele,
                     is_answer: index == ans,
                   },
-                  { auth: api.credentials }
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Token ${props.token}`,
+                    },
+                  }
                 )
                 .then((result) => console.log(result))
                 .catch((err) => console.log(err.response));
@@ -356,6 +360,7 @@ function AddQuestions(props) {
       return (
         <div key={value.id}>
           <ShortAnswerQuestion
+            token={props.token}
             id={value.id}
             questions={questions}
             setQuestions={setQuestions}
@@ -381,6 +386,7 @@ function AddQuestions(props) {
     return (
       <div key={value.id}>
         <MultipleChoiceQuestion
+          token={props.token}
           id={value.id}
           questions={questions}
           setChoices={setQuestions}
@@ -424,7 +430,9 @@ function AddQuestions(props) {
   if (redirect)
     return (
       <Container className="invitation-code">
-        <p className="text-success font-cursive ">Test has been successfully created!</p>
+        <p className="text-success font-cursive ">
+          Test has been successfully created!
+        </p>
         <p className="font-cursive ">Share this code with students: </p>
         <div className="code-share">
           <p className="card">{props.code}</p>
@@ -468,7 +476,7 @@ function AddQuestions(props) {
         {allowSubmit && (
           <button
             onClick={handleSubmit}
-            className="my-3 btn btn-md btn-success float-right"
+            className="my-3 btn btn-md btn-success"
           >
             Submit
           </button>
@@ -484,6 +492,8 @@ function CreateTest(props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [redirectInfo, setRedirectInfo] = useState({ status: false });
+
+  console.log(props.token);
 
   const validate = () => {
     if (title.length == 0) return false;
@@ -504,7 +514,10 @@ function CreateTest(props) {
           description: description,
         },
         {
-          auth: api.credentials,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
         }
       )
       .then((res) => {
@@ -529,6 +542,7 @@ function CreateTest(props) {
               id={redirectInfo.id}
               title={title}
               desc={description}
+              token={props.token}
             />
           }
         </Route>
@@ -538,7 +552,7 @@ function CreateTest(props) {
     <Container className="mx-auto mt-5 border p-4 rounded test-creation">
       <Form>
         <Form.Group controlId="formTitle">
-          <Form.Label style={{fontSize: "1.3rem"}}>Title</Form.Label>
+          <Form.Label style={{ fontSize: "1.3rem" }}>Title</Form.Label>
           <Form.Control
             type="text"
             value={title}
@@ -552,7 +566,9 @@ function CreateTest(props) {
         </Form.Group>
 
         <Form.Group controlId="formDescription">
-          <Form.Label name="title" style={{fontSize: "1.3rem"}}>Description</Form.Label>
+          <Form.Label name="title" style={{ fontSize: "1.3rem" }}>
+            Description
+          </Form.Label>
           <Form.Control
             as="textarea"
             value={description}

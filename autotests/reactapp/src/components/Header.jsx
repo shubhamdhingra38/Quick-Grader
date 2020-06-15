@@ -1,32 +1,62 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./Header.css";
-import {
-    Link
-  } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Header(){
-    return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a className="navbar-brand" href="#">Navbar</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-        </button>
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import axios from "axios";
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-                <Link to="/" className="nav-link">Home</Link>
-            </li>
-            <li className="nav-item">
-                <Link to="/about" className="nav-link">About</Link>
-            </li>
-            <li className="nav-item">
-                <Link to="/dashboard" className="nav-link">Dashboard</Link>
-            </li>
-            </ul>
-        </div>
-        </nav>
-    )
+
+function Header(props) {
+
+  const [type, setType] = useState();
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/auth/user/', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${props.token}`
+        }
+      })
+      .then((res) => {
+        console.log(res.data);
+        setType(res.data.group);
+      }).catch(err => console.log(err.response));
+  }, [props.token]);
+
+  let authElement = !props.token ? (
+    <>
+   <Nav.Link className="mx-3" href="/login">Login</Nav.Link>
+      <Nav.Link className="mx-3" href="/register">Register</Nav.Link>
+    </>
+ 
+  ) : <Nav.Link className="mx-3" onClick={()=>{
+    localStorage.removeItem('token');
+  }} href="/">Logout</Nav.Link>;
+  
+  return (
+    <>
+      <Navbar collapseOnSelect expand="lg" variant="dark" bg="dark">
+        <Navbar.Brand href="#">
+        <img
+            style={{ height: "45px"}}
+            className="content-image mx-3"
+            src={require("./static/images/logo.png")}
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link className="mx-2" href="/">Home</Nav.Link>
+            <Nav.Link className="mx-2" href="/about">About</Nav.Link>
+            {type == "Faculty" && <Nav.Link className="mx-2" href="/dashboard">Dashboard</Nav.Link>}
+          </Nav>
+          <Nav>
+            {authElement}
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    </>
+  );
 }
 
 export default Header;

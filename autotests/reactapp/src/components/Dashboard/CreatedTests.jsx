@@ -28,15 +28,12 @@ const api = {
   response_url: "http://localhost:8000/test/response/",
   // http://localhost:8000/test/answer/?responseID=36
   answer_url: "http://localhost:8000/test/answer/",
-  credentials: {
-    username: "ateacher2",
-    password: "password123@",
-  },
 };
 
 function ViewResponses(props) {
   const [responses, setResponses] = useState([]);
 
+  console.log(props.token);
   // get the responses intially
   useEffect(() => {
     axios
@@ -44,7 +41,10 @@ function ViewResponses(props) {
         params: {
           quizID: props.id,
         },
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         console.log(res);
@@ -105,7 +105,12 @@ function Test(props) {
     // console.log("making requests");
     props.data.questions.forEach((questionID, index) => {
       axios
-        .get(api.question_url + questionID, { auth: api.credentials })
+        .get(api.question_url + questionID, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
+        })
         .then((res) => {
           setQuestions((prevQuestions) => {
             return [...prevQuestions, res.data];
@@ -134,7 +139,12 @@ function Test(props) {
     for (choiceId in choices) {
       console.log(api.choice_url + choices[choiceId]);
       promises.push(
-        axios.get(api.choice_url + choices[choiceId], { auth: api.credentials })
+        axios.get(api.choice_url + choices[choiceId], {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
+        })
       );
     }
     Promise.all(promises).then((res) => {
@@ -204,7 +214,10 @@ function Test(props) {
   const changeLockStatus = () => {
     axios
       .get(api.lock_unlock_quiz_url + props.data.code + "/", {
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => setLockStatus(!lockStatus))
       .catch((err) => console.log(err));
@@ -305,7 +318,11 @@ function Test(props) {
               <p className="lead" style={{ fontSize: "0.8rem" }}>
                 Click the responses to grade them manually.
               </p>
-              <ViewResponses id={props.data.id} questions={questions} />
+              <ViewResponses
+                id={props.data.id}
+                questions={questions}
+                token={props.token}
+              />
             </div>
           )}
 
@@ -338,7 +355,7 @@ function ShowTests(props) {
   let testElements = props.data.map((data) => {
     return (
       <div key={data.id}>
-        <Test data={data} key={data.id} />
+        <Test data={data} key={data.id} token={props.token} />
       </div>
     );
   });
@@ -353,7 +370,10 @@ function CreatedTests(props) {
   useEffect(() => {
     axios
       .get(api.my_tests_url, {
-        auth: api.credentials,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
       })
       .then((res) => {
         setMyTests(res.data);
@@ -362,9 +382,9 @@ function CreatedTests(props) {
   }, []);
 
   return myTests ? (
-    <ShowTests data={myTests} />
+    <ShowTests data={myTests} token={props.token} />
   ) : (
-    <div className={"body-text"}>
+    <div className={"body-text mt-5"}>
       Loading...
       <img
         style={{ width: "30px" }}
