@@ -1,3 +1,13 @@
+# Quick Grader
+This project is aimed towards lifting the heavy work from teachers by largely automating the grading process for short answer based quizzes.
+
+Through use of Artificial Intelligence, two features included are:
+
+  1.   Plagiarism Detection
+  2.   Auto Grading
+  
+  Live hosted app: http://quick-graderr.herokuapp.com/
+
 ## Screenshots
 <details><summary>Home</summary>
 <p>
@@ -58,14 +68,6 @@
 
 
 
-
-# Quick Grader
-This project is aimed towards lifting the heavy work from teachers by largely automating the grading process for short answer based quizzes.
-
-Through use of Artificial Intelligence, two features included are:
-
-  1.   Plagiarism Detection
-  2.   Auto Grading
 ### Plagiarism Detection
 For plagiarism detection, traditional NLP approaches are used such as Preprocessing and Tokenization (Bag of Words), Stemming, Lemmatization and POS tagging along with removal of StopWords. This was chosen because often while plagiarising corpus of texts during a test, students will change the order or the syntactic structure of the paragraph or sentence. A more sophisticated model might make assumptions about semantic similarity, which makes less sense when plagiarism is the issue. Cosine similarity is used for the degree of similarity after vectorization.
 
