@@ -4,7 +4,7 @@ import axios from "axios";
 
 const api = {
   // http://localhost:8000/test/report/code/
-  report_generation_url: "/test/report/",
+  report_generation_url: "http://quick-grader.herokuapp.com/test/report/",
   // credentials: {
   //   username: "ateacher2",
   //   password: "password123@",

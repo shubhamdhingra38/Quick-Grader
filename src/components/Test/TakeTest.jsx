@@ -6,8 +6,8 @@ import "./CreateTest.css";
 import { Container, Alert } from "react-bootstrap";
 
 const api = {
-  quiz_url: "/test/quiz/instance/",
-  response_url: "/test/response/",
+  quiz_url: "http://quick-grader.herokuapp.com/test/quiz/instance/",
+  response_url: "http://quick-grader.herokuapp.com/test/response/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
