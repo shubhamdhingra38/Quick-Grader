@@ -17,13 +17,13 @@ import CreatedTests from "./CreatedTests";
 
 
 const api = {
-  my_tests_url: "/test/mytests/",
-  question_url: "/test/question/",
-  choice_url: "/test/choice/",
+  my_tests_url: "http://quick-grader.herokuapp.com/test/mytests/",
+  question_url: "http://quick-grader.herokuapp.com/test/question/",
+  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
   // http://localhost:8000/test/response/?quizID=286
-  response_url: "/test/response/",
+  response_url: "http://quick-grader.herokuapp.com/test/response/",
   // http://localhost:8000/test/answer/?responseID=36
-  answer_url: "/test/answer/",
+  answer_url: "http://quick-grader.herokuapp.com/test/answer/",
 };
 function Dashboard(props) {
   console.log(props);

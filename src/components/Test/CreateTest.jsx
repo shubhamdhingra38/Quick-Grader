@@ -14,10 +14,10 @@ import {
 } from "react-bootstrap";
 
 const api = {
-  quiz_url: "/test/quiz/",
-  choice_url: "/test/choice/",
-  response_url: "/test/response/",
-  question_url: "/test/question/",
+  quiz_url: "http://quick-grader.herokuapp.com/test/quiz/",
+  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
+  response_url: "http://quick-grader.herokuapp.com/test/response/",
+  question_url: "http://quick-grader.herokuapp.com/test/question/",
 };
 
 function ShortAnswerQuestion(props) {

@@ -5,10 +5,10 @@ import { Form, Container, ListGroup } from "react-bootstrap";
 import "./CreateTest.css";
 
 const api = {
-  quiz_url: "/test/quiz/",
-  question_url: "/test/question/",
-  answer_url: "/test/answer/",
-  choice_url: "/test/choice/",
+  quiz_url: "http://quick-grader.herokuapp.com/test/quiz/",
+  question_url: "http://quick-grader.herokuapp.com/test/question/",
+  answer_url: "http://quick-grader.herokuapp.com/test/answer/",
+  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";

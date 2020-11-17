@@ -53,7 +53,7 @@ function SignUp(props) {
     console.log(creds);
     creds["group"] = props.type;
     axios
-      .post("/auth/users/", creds, {
+      .post("http://quick-grader.herokuapp.com/auth/users/", creds, {
         headers: {
           "Content-Type": "application/json"
         },
