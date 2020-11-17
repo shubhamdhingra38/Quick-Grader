@@ -8,7 +8,7 @@ function Header(props) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/auth/user/", {
+      .get("http://quick-grader.herokuapp.com/auth/user/", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${props.token}`,
