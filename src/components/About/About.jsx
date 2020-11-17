@@ -5,7 +5,7 @@ import { Container } from "react-bootstrap";
 function About(props) {
   document.title = "About - QuickGrader";
   return (
-    <Container fluid>
+    <Container>
       <div
         className="body-text"
         style={{ fontSize: "1.25rem", width: "100%!important" }}

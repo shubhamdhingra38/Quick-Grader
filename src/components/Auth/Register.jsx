@@ -110,12 +110,11 @@ function SignUp(props) {
   if (redirect) return <Redirect to="/login"></Redirect>;
 
   return (
-    <Container maxWidth="xs">
+    <Container style={{maxWidth: "400px"}}>
       {alert}
       <Container
         className="test-form border mt-5 p-3"
         component="main"
-        maxWidth="xs"
       >
         <div className={classes.paper}>
           <Avatar className={classes.avatar}></Avatar>
@@ -231,7 +230,7 @@ function Register() {
             >
               <div class="content-overlay"></div>
               <img
-                className="content-image w-100 mx-3"
+                className="content-image w-100 mx-0"
                 src={require("../static/images/student.jpg")}
               />
               <div class="content-details fadeIn-top fadeIn-left">
@@ -253,7 +252,7 @@ function Register() {
             >
               <div class="content-overlay"></div>
               <img
-                className="content-image w-100 mx-3"
+                className="content-image w-100 mx-0"
                 src={require("../static/images/teacher.jpg")}
               />
               <div class="content-details fadeIn-top fadeIn-right">
@@ -264,12 +263,12 @@ function Register() {
           </div>
         </div>
       </div>
-      <p class="d-flex justify-content-center mt-4">
-        Already have an account? Click &nbsp;
-        <Link href="/login" color="blue">
-          here{" "}
-        </Link>
-        &nbsp; to login
+      <p class="d-flex justify-content-center mt-4" style={{flexWrap: "wrap"}}>
+        Already have an account? Click
+        <a href="/login" color="blue">
+        &nbsp;here&nbsp;
+        </a>
+        to login
       </p>
     </Container>
   );

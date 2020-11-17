@@ -95,7 +95,7 @@ export default function Login(props) {
   }
 
   return (
-    <Container component="main" className="test-form border mt-5 p-3" maxWidth="xs">
+    <Container component="main" className="test-form border mt-5 p-3" style={{maxWidth: "300px"}} >
       {alert}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>

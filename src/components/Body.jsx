@@ -118,7 +118,7 @@ function Body(props) {
     setShowAlert(1);
   }
   return (
-    <Container fluid>
+    <Container style={{}}>
       {showAlert == 1 ? (
         <Alert
           className="mt-4 alert-bottom"
