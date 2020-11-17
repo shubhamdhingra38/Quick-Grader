@@ -1,0 +1,71 @@
+.border {
+    border-width:2px !important;
+}
+.texts{
+    padding-left: 10px;
+    outline: none;
+    border: none;
+    background: transparent !important;
+}
+
+.info-hr{
+    border-style: dashed;
+}
+
+.test-creation{
+    border-color: #abced4 !important;
+    background-color: rgba(0, 100, 100, 0.13) !important;
+}
+.test-form{
+    box-shadow: aquamarine;
+    background-color: rgba(0, 100, 100, 0.13) !important;
+    border-color: #abced4 !important;
+    border-width: 2px !important; 
+}
+
+.test-form-rounded{
+    box-shadow: aquamarine;
+    background-color: rgba(0, 100, 100, 0.13) !important;
+    border-color: #abced4 !important;
+    border-radius: 5px;
+    border-width: 2px !important; 
+}
+
+.test-form .bg-success{
+    background-color:  rgba(0, 139, 139, 0.516) !important; 
+}
+
+.test-form .bg-danger{
+    background-color:  rgba(255, 139, 139, 0.8) !important; 
+}
+
+
+hr{
+    border: 1px solid #1313136b;
+    margin-bottom: 20px;
+}
+
+
+.invitation-code{
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+.code-share{
+    height: 35px !important;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.code-share > button{
+    height: 40px;
+    margin-left: 15px;
+}
+.code-share .card{
+    font-size: 1.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 10px;
+    color: green;
+}
