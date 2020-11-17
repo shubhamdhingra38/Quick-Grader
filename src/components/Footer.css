@@ -1,0 +1,17 @@
+body {
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    padding-bottom: 100px; 
+}
+
+.footer-copyright {
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: white;
+    text-align: center;
+    flex-shrink: 0;
+}

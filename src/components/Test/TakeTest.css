@@ -1,0 +1,23 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+#ans::selection{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+#ans{
+    background-color: rgba(0, 0, 0, .15);
+}
+.list-group-item-secondary{
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.5);
+    border-radius: 3px !important;
+}
+#code-input{
+    display: block;
+}
+.alert-bottom{
+    position: fixed;
+    bottom: 5px !important;
+    right: 25px !important;
+    margin-left: 25px !important;
+}
