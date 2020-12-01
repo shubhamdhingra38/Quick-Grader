@@ -13,14 +13,14 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 const api = {
-  my_tests_url: "http://quick-grader.herokuapp.com/test/mytests/",
-  question_url: "http://quick-grader.herokuapp.com/test/question/",
-  lock_unlock_quiz_url: "http://quick-grader.herokuapp.com/test/quiz/lock/",
-  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
+  my_tests_url: "https://quick-grader.herokuapp.com/test/mytests/",
+  question_url: "https://quick-grader.herokuapp.com/test/question/",
+  lock_unlock_quiz_url: "https://quick-grader.herokuapp.com/test/quiz/lock/",
+  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
   // http://localhost:8000/test/response/?quizID=286
-  response_url: "http://quick-grader.herokuapp.com/test/response/",
+  response_url: "https://quick-grader.herokuapp.com/test/response/",
   // http://localhost:8000/test/answer/?responseID=36
-  answer_url: "http://quick-grader.herokuapp.com/test/answer/",
+  answer_url: "https://quick-grader.herokuapp.com/test/answer/",
 };
 
 function ViewResponses(props) {

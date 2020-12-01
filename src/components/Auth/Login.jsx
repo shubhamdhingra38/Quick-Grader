@@ -53,7 +53,7 @@ export default function Login(props) {
     e.preventDefault();
     let data = JSON.stringify(creds);
     axios
-      .post("http://quick-grader.herokuapp.com/auth/token/", data, {
+      .post("https://quick-grader.herokuapp.com/auth/token/", data, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {

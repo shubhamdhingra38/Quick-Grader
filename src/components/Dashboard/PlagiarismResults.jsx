@@ -14,9 +14,9 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const api = {
   // http://localhost:8000/ml/detect-plagiarism/287 for quiz 287
-  set_plagiarism: "http://localhost:8000/test/quiz/plagiarize/",
-  plagiarism_detection_url: "http://localhost:8000/ml/detect-plagiarism/",
-  response_url: "http://localhost:8000/test/response/",
+  set_plagiarism: "https://localhost:8000/test/quiz/plagiarize/",
+  plagiarism_detection_url: "https://localhost:8000/ml/detect-plagiarism/",
+  response_url: "https://localhost:8000/test/response/",
 };
 
 function Similar(props) {
@@ -308,7 +308,9 @@ function PlagiarismResults(props) {
   return (
     <Container>
       <p className="display-4">Unavailable</p>
-      <p className="lead">All ML endpoints are unavailable due to Heroku's limited slug size which is exhausted by installing ML libraries.</p>
+      <p className="lead">
+        All ML endpoints are unavailable due to Heroku's limited slug size which is exhausted by installing ML libraries.
+      </p>
       
       <p className="lead">
       Checkout the <a href="https://github.com/shubhamdhingra38/Quick-Grader">GitHub repository</a> for a quick overview of these features.

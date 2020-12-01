@@ -8,7 +8,7 @@ import { Alert, Container } from "react-bootstrap";
 // axios.defaults.xsrfCookieName = "csrftoken";
 
 const api = {
-  auth_url: "http://quick-grader.herokuapp.com/auth/user/",
+  auth_url: "https://quick-grader.herokuapp.com/auth/user/",
 };
 
 function Body(props) {
