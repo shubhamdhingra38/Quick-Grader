@@ -11,14 +11,14 @@ import {
 import { Redirect } from "react-router-dom";
 
 const api = {
-  quiz_url: "http://quick-grader.herokuapp.com/test/quiz/",
-  question_url: "http://quick-grader.herokuapp.com/test/question/",
-  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
-  // http://localhost:8000/test/response/?quizID=286
-  response_url: "http://quick-grader.herokuapp.com/test/response/",
-  // http://localhost:8000/test/answer/?responseID=36
-  answer_url: "http://quick-grader.herokuapp.com/test/answer/",
-  grade_url: "http://quick-grader.herokuapp.com/test/grade/",
+  quiz_url: "https://quick-grader.herokuapp.com/test/quiz/",
+  question_url: "https://quick-grader.herokuapp.com/test/question/",
+  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
+  // https://localhost:8000/test/response/?quizID=286
+  response_url: "https://quick-grader.herokuapp.com/test/response/",
+  // https://localhost:8000/test/answer/?responseID=36
+  answer_url: "https://quick-grader.herokuapp.com/test/answer/",
+  grade_url: "https://quick-grader.herokuapp.com/test/grade/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
