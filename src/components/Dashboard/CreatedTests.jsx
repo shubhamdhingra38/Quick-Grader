@@ -222,7 +222,10 @@ function Test(props) {
             </p>
             <button
               className="btn btn-sm btn-info"
-              onClick={() => navigator.clipboard.writeText(props.data.code)}
+              onClick={() => {
+                console.log('code', props.data.code, 'copied')
+                navigator.clipboard.writeText(props.data.code)
+              }}
             >
               Copy
             </button>
@@ -371,7 +374,7 @@ function CreatedTests(props) {
   return myTests ? (
     <ShowTests data={myTests} token={props.token} />
   ) : (
-    <div className={"body-text mt-5"}>
+    <div className={"body-text text-center mt-5"} style={{fontSize: "2.5rem"}}>
       Loading...
       <img
         style={{ width: "30px" }}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import axios from "axios";
 
 function Header(props) {
@@ -43,7 +43,7 @@ function Header(props) {
   );
 
   return (
-    <>
+    <div className="navbar">
       <Navbar
       fixed="top"
         collapseOnSelect
@@ -78,7 +78,7 @@ function Header(props) {
           <Nav>{authElement}</Nav>
         </Navbar.Collapse>
       </Navbar>
-    </>
+    </div>
   );
 }
 
