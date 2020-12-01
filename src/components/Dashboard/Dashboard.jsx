@@ -3,28 +3,10 @@ import "./Dashboard.css";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Switch, Link, Redirect, Route } from "react-router-dom";
 import {
-  Row,
-  Col,
-  Card,
-  Button,
-  ListGroupItem,
-  ListGroup,
   Container,
-  Accordion,
-  Collapse,
 } from "react-bootstrap";
-import CreatedTests from "./CreatedTests";
 
 
-const api = {
-  my_tests_url: "http://quick-grader.herokuapp.com/test/mytests/",
-  question_url: "http://quick-grader.herokuapp.com/test/question/",
-  choice_url: "http://quick-grader.herokuapp.com/test/choice/",
-  // http://localhost:8000/test/response/?quizID=286
-  response_url: "http://quick-grader.herokuapp.com/test/response/",
-  // http://localhost:8000/test/answer/?responseID=36
-  answer_url: "http://quick-grader.herokuapp.com/test/answer/",
-};
 function Dashboard(props) {
   console.log(props);
   document.title = "Dashboard";

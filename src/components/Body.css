@@ -26,15 +26,14 @@ body,
 body * {
   font-family: "Pangolin", cursive;
 }
-  #outer_space {
-    margin-left: 320px;
-    margin-top: 100px;
-    width: 51px;
-    height: 120px;
-  }
+
+#outer_space {
+  margin-left: 320px;
+  margin-top: 100px;
+  width: 51px;
+  height: 120px;
+}
 @media only screen and (min-width: 600px) {
-
-
   #line {
     margin-top: 40px;
     width: 475px;
