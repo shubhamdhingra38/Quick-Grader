@@ -17,9 +17,13 @@ import { Alert } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 
+const domain = "http://127.0.0.1:8000/";
+const api = {
+  auth_url: domain + "auth/token/",
+};
+
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -35,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     color: "white",
-    backgroundColor: "rgb(0, 0, 0)",
+    backgroundColor: "black",
+    "&:hover": {
+      background: "#3f51b5",
+    },
   },
 }));
 
@@ -53,11 +60,11 @@ export default function Login(props) {
     e.preventDefault();
     let data = JSON.stringify(creds);
     axios
-      .post("https://quick-grader.herokuapp.com/auth/token/", data, {
+      .post(api.auth_url, data, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         props.setToken(res.data.token);
         setRedirect(true);
       })
@@ -75,8 +82,6 @@ export default function Login(props) {
     });
   };
 
-
-  
   let alert = errorMsg ? (
     <Alert
       variant="danger"
@@ -88,14 +93,16 @@ export default function Login(props) {
     </Alert>
   ) : null;
 
-  if(redirect){
-    return (
-      <Redirect to="/"></Redirect>
-    )
+  if (redirect) {
+    return <Redirect to="/"></Redirect>;
   }
 
   return (
-    <Container component="main" className="test-form border mt-5 p-3" style={{maxWidth: "300px"}} >
+    <Container
+      component="main"
+      className="test-form border mt-5 p-3"
+      style={{ maxWidth: "300px" }}
+    >
       {alert}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>

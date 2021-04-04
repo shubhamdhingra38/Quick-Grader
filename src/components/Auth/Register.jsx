@@ -17,11 +17,13 @@ import { Alert } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
+const domain = "http://127.0.0.1:8000/";
+const api = {
+  auth_url: domain + "auth/users/",
+};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -53,9 +55,9 @@ function SignUp(props) {
     console.log(creds);
     creds["group"] = props.type;
     axios
-      .post("https://quick-grader.herokuapp.com/auth/users/", creds, {
+      .post(api.auth_url, creds, {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
@@ -110,12 +112,9 @@ function SignUp(props) {
   if (redirect) return <Redirect to="/login"></Redirect>;
 
   return (
-    <Container style={{maxWidth: "400px"}}>
+    <Container style={{ maxWidth: "400px" }}>
       {alert}
-      <Container
-        className="test-form border mt-5 p-3"
-        component="main"
-      >
+      <Container className="test-form border mt-5 p-3" component="main">
         <div className={classes.paper}>
           <Avatar className={classes.avatar}></Avatar>
           <Typography component="h1" variant="h5">
@@ -263,10 +262,13 @@ function Register() {
           </div>
         </div>
       </div>
-      <p class="d-flex justify-content-center mt-4" style={{flexWrap: "wrap"}}>
+      <p
+        class="d-flex justify-content-center mt-4"
+        style={{ flexWrap: "wrap" }}
+      >
         Already have an account? Click
         <a href="/login" color="blue">
-        &nbsp;here&nbsp;
+          &nbsp;here&nbsp;
         </a>
         to login
       </p>

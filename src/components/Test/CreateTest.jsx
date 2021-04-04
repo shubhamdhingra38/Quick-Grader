@@ -13,11 +13,13 @@ import {
   Container,
 } from "react-bootstrap";
 
+const domain = "http://127.0.0.1:8000/";
+
 const api = {
-  quiz_url: "https://quick-grader.herokuapp.com/test/quiz/",
-  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
-  response_url: "https://quick-grader.herokuapp.com/test/response/",
-  question_url: "https://quick-grader.herokuapp.com/test/question/",
+  quiz_url: domain + "test/quiz/",
+  choice_url: domain + "test/choice/",
+  response_url: domain + "test/response/",
+  question_url: domain + "test/question/",
 };
 
 function ShortAnswerQuestion(props) {
@@ -458,7 +460,7 @@ function AddQuestions(props) {
       <Container
         className="border test-form p-3"
         style={{
-          position: "relative"
+          position: "relative",
         }}
       >
         {/* Info about Quiz */}
@@ -493,7 +495,12 @@ function AddQuestions(props) {
           <button
             onClick={handleSubmit}
             className="my-3 btn btn-md btn-success"
-            style={{position: "absolute", right: "25px", bottom: "5px", marginLeft: "25px !important"}}
+            style={{
+              position: "absolute",
+              right: "25px",
+              bottom: "5px",
+              marginLeft: "25px !important",
+            }}
           >
             Submit
           </button>
@@ -566,9 +573,7 @@ function CreateTest(props) {
       </div>
     );
   return (
-    <Container
-      className="mt-5 border p-4 rounded test-creation w-75"
-    >
+    <Container className="mt-5 border p-4 rounded test-creation w-75">
       <Form>
         <Form.Group controlId="formTitle">
           <Form.Label style={{ fontSize: "1.3rem" }}>Title</Form.Label>
