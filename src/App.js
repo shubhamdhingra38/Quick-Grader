@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
-import Header from "./components/Header";
+import Main from "./components/Main";
 import Footer from "./components/Footer";
-import Body from "./components/Body";
+import Home from "./components/Home";
 import TakeTest from "./components/Test/TakeTest";
 import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
@@ -15,50 +15,58 @@ import CreatedTests from "./components/Dashboard/CreatedTests";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import GenerateReport from "./components/Dashboard/GenerateReport";
 import Login from "./components/Auth/Login";
+import Logout from './components/Auth/Logout'
 import Register from "./components/Auth/Register";
+import { makeStyles } from "@material-ui/core";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      token: null,
-    };
-    this.setToken.bind(this);
-  }
+const useStyles = makeStyles((theme) => ({
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
 
-  componentDidUpdate() {
-    // console.log(this.state);
-  }
+  toolbar: theme.mixins.toolbar,
+}));
 
-  componentWillMount() {
-    this.setState({
-      token: localStorage.getItem("token"),
-    });
-  }
+export default function App() {
+  const [token, setToken] = React.useState();
+  const classes = useStyles();
 
-  setToken = (val) => {
-    // console.log("setToken called");
-    this.setState({
-      token: val,
-    });
-    localStorage.setItem("token", this.state.token);
+  const setNewToken = (val) => {
+    console.log("setToken called");
+    setToken(val);
+    if(!val){
+      localStorage.removeItem("token")
+    } else{
+
+    localStorage.setItem("token", val);
+    }
   };
 
-  render() {
-    return (
-      <Router>
-        <div>
-          <Header token={this.state.token} />
+  React.useEffect(()=>{
+    if(localStorage.token){
+      setToken(localStorage.token)
+    }
+
+  }, [])
+
+
+  return (
+    <Router>
+      <div style={{ display: "flex" }}>
+        <Main token={token}/>
+        <div className={classes.content}>
+          <div className={classes.toolbar}/>
           <Switch>
-            <Route exact path="/" render={(props) => <Body token={this.state.token} {...props}/>}/>
+            <Route exact path="/home" render={(props) => <Home {...props} />} />
             <Route exact path="/about">
-              <About token={this.state.token} />
+              <About token={token} />
             </Route>
             <Route exact path="/dashboard">
-              <Dashboard token={this.state.token} />
+              <Dashboard token={token} />
             </Route>
             <Route exact path="/dashboard/created-tests">
-              <CreatedTests token={this.state.token} />
+              <CreatedTests token={token} />
             </Route>
             <Route
               path="/dashboard/generate-report"
@@ -66,44 +74,41 @@ class App extends React.Component {
             ></Route>
             <Route
               path="/dashboard/created-tests/response/:responseID"
-              render={(props) => (
-                <Response token={this.state.token} {...props} />
-              )}
+              render={(props) => <Response token={token} {...props} />}
             />
             <Route path="/dashboard/plagiarism/">
-              <Plagiarism token={this.state.token} />
+              <Plagiarism token={token} />
             </Route>
             <Route
               path="/dashboard/plagiarism-results/:quizID"
-              render={(props) => (
-                <PlagiarismResults token={this.state.token} {...props} />
-              )}
+              render={(props) => <PlagiarismResults token={token} {...props} />}
             ></Route>
-            <Route path="/dashboard/created-tests/autograde/:quizID" render={(props) => (
-              <AutoGrade token={this.state.token} {...props} />
-            )}>
-
-            </Route>
+            <Route
+              path="/dashboard/created-tests/autograde/:quizID"
+              render={(props) => <AutoGrade token={token} {...props} />}
+            ></Route>
           </Switch>
           <Route path="/take-test">
-            <TakeTest token={this.state.token} />
+            <TakeTest token={token} />
           </Route>
           <Route path="/login">
-            <Login setToken={this.setToken} />
+            <Login setToken={setNewToken} />
           </Route>
           <Route path="/register">
             <Register />
           </Route>
+           <Route path="/logout">
+            <Logout token={token} setToken={setNewToken}/>
+          </Route>
           <Switch>
             <Route path="/create-test">
-              <CreateTest token={this.state.token} />
+              <CreateTest token={token} />
             </Route>
           </Switch>
-          <Footer />
         </div>
-      </Router>
-    );
-  }
-}
 
-export default App;
+        <Footer />
+      </div>
+    </Router>
+  );
+}

@@ -5,9 +5,11 @@ import Quiz from "./Quiz";
 import "./CreateTest.css";
 import { Container, Alert } from "react-bootstrap";
 
+const domain = "http://127.0.0.1:8000/";
+
 const api = {
-  quiz_url: "https://quick-grader.herokuapp.com/test/quiz/instance/",
-  response_url: "https://quick-grader.herokuapp.com/test/response/",
+  quiz_url: domain + "test/quiz/instance/",
+  response_url: domain + "test/response/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";

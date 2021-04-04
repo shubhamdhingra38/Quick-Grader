@@ -10,15 +10,17 @@ import {
 } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 
+const domain = "http://127.0.0.1:8000/";
+
 const api = {
-  quiz_url: "https://quick-grader.herokuapp.com/test/quiz/",
-  question_url: "https://quick-grader.herokuapp.com/test/question/",
-  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
+  quiz_url: domain + "test/quiz/",
+  question_url: domain + "test/question/",
+  choice_url: domain + "test/choice/",
   // https://localhost:8000/test/response/?quizID=286
-  response_url: "https://quick-grader.herokuapp.com/test/response/",
+  response_url: domain + "test/response/",
   // https://localhost:8000/test/answer/?responseID=36
-  answer_url: "https://quick-grader.herokuapp.com/test/answer/",
-  grade_url: "https://quick-grader.herokuapp.com/test/grade/",
+  answer_url: domain + "test/answer/",
+  grade_url: domain + "test/grade/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -358,7 +360,10 @@ function Test(props) {
   if (redirect) return <Redirect to="/dashboard/created-tests/" />;
   let borderClass = props.plag ? null : "test-form";
   return (
-    <Container className={`${borderClass} p-3 mt-5 border`} style={{ position: "relative" }}>
+    <Container
+      className={`${borderClass} p-3 mt-5 border`}
+      style={{ position: "relative" }}
+    >
       {alert}
       <div>
         <div className="info">
@@ -368,14 +373,12 @@ function Test(props) {
           <hr className="info-hr" />
         </div>
         {showToast ? toast : null}
-        <div style={{ marginBottom: "35px" }}>
-          { questionElements }
-        </div>
+        <div style={{ marginBottom: "35px" }}>{questionElements}</div>
         {props.plag ? null : (
           <Button
             onClick={handleSubmit}
             className="btn btn-md btn-success"
-            style={{right: "22px", bottom: "7px", position: "absolute"}}
+            style={{ right: "22px", bottom: "7px", position: "absolute" }}
           >
             Grade
           </Button>

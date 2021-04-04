@@ -4,11 +4,13 @@ import { Redirect } from "react-router-dom";
 import { Form, Container, ListGroup } from "react-bootstrap";
 import "./CreateTest.css";
 
+const domain = "http://127.0.0.1:8000/";
+
 const api = {
-  quiz_url: "https://quick-grader.herokuapp.com/test/quiz/",
-  question_url: "https://quick-grader.herokuapp.com/test/question/",
-  answer_url: "https://quick-grader.herokuapp.com/test/answer/",
-  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
+  quiz_url: domain + "test/quiz/",
+  question_url: domain + "test/question/",
+  answer_url: domain + "test/answer/",
+  choice_url: domain + "test/choice/",
 };
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -85,7 +87,6 @@ function Quiz(props) {
   console.log(props.token);
   // console.log(props.location.state);
 
-
   // when student types answer update
   const handleChange = (event) => {
     let value = event.target.value;
@@ -102,7 +103,7 @@ function Quiz(props) {
     for (choiceId in choices) {
       console.log(api.choice_url + choices[choiceId]);
       promises.push(
-        axios.get(api.choice_url + choices[choiceId] + '/', {
+        axios.get(api.choice_url + choices[choiceId] + "/", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Token ${props.token}`,
@@ -241,12 +242,17 @@ function Quiz(props) {
     }
   });
 
-  if (redirect) return <Redirect to={{
-      pathname: "/",
-      state: {
-        alertMsg: "Response has been successfully submitted!"
-      }
-  }} />;
+  if (redirect)
+    return (
+      <Redirect
+        to={{
+          pathname: "/",
+          state: {
+            alertMsg: "Response has been successfully submitted!",
+          },
+        }}
+      />
+    );
 
   return (
     <Container

@@ -2,31 +2,28 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
-import {
-  ListGroupItem,
-  ListGroup,
-  Container,
-  Collapse,
-} from "react-bootstrap";
+import { ListGroupItem, ListGroup, Container, Collapse } from "react-bootstrap";
+import Divider from "@material-ui/core/Divider";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
+const domain = "http://127.0.0.1:8000/";
+
 const api = {
-  my_tests_url: "https://quick-grader.herokuapp.com/test/mytests/",
-  question_url: "https://quick-grader.herokuapp.com/test/question/",
-  lock_unlock_quiz_url: "https://quick-grader.herokuapp.com/test/quiz/lock/",
-  choice_url: "https://quick-grader.herokuapp.com/test/choice/",
+  my_tests_url: domain + "test/mytests/",
+  question_url: domain + "test/question/",
+  lock_unlock_quiz_url: domain + "test/quiz/lock/",
+  choice_url: domain + "test/choice/",
   // http://localhost:8000/test/response/?quizID=286
-  response_url: "https://quick-grader.herokuapp.com/test/response/",
+  response_url: domain + "test/response/",
   // http://localhost:8000/test/answer/?responseID=36
-  answer_url: "https://quick-grader.herokuapp.com/test/answer/",
+  answer_url: domain + "test/answer/",
 };
 
 function ViewResponses(props) {
   const [responses, setResponses] = useState([]);
 
-  // console.log(props.token);
   // get the responses intially
   useEffect(() => {
     axios
@@ -40,7 +37,6 @@ function ViewResponses(props) {
         },
       })
       .then((res) => {
-        // console.log(res);
         setResponses(res.data);
       })
       .catch((err) => console.log(err.response));
@@ -55,7 +51,10 @@ function ViewResponses(props) {
         }
       >
         <div className="d-flex justify-content-between">
-          <Link target="_blank" to={"/dashboard/created-tests/response/" + data.id}>
+          <Link
+            target="_blank"
+            to={"/dashboard/created-tests/response/" + data.id}
+          >
             {data.taken_by}
           </Link>
           {data.graded && (
@@ -92,7 +91,7 @@ function Test(props) {
     // console.log("making requests");
     props.data.questions.forEach((questionID, index) => {
       axios
-        .get(api.question_url + questionID + '/', {
+        .get(api.question_url + questionID + "/", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Token ${props.token}`,
@@ -125,7 +124,7 @@ function Test(props) {
     let choiceId;
     for (choiceId in choices) {
       promises.push(
-        axios.get(api.choice_url + choices[choiceId] + '/', {
+        axios.get(api.choice_url + choices[choiceId] + "/", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Token ${props.token}`,
@@ -148,7 +147,6 @@ function Test(props) {
     // console.log(choices);
   };
 
-  
   let questionElements = questions.map((data, idx) => {
     if (data.type == 1) {
       // Short answer
@@ -223,8 +221,8 @@ function Test(props) {
             <button
               className="btn btn-sm btn-info"
               onClick={() => {
-                console.log('code', props.data.code, 'copied')
-                navigator.clipboard.writeText(props.data.code)
+                console.log("code", props.data.code, "copied");
+                navigator.clipboard.writeText(props.data.code);
               }}
             >
               Copy
@@ -346,6 +344,7 @@ function ShowTests(props) {
     return (
       <div key={data.id}>
         <Test data={data} key={data.id} token={props.token} />
+        <Divider />
       </div>
     );
   });
@@ -374,7 +373,10 @@ function CreatedTests(props) {
   return myTests ? (
     <ShowTests data={myTests} token={props.token} />
   ) : (
-    <div className={"body-text text-center mt-5"} style={{fontSize: "2.5rem"}}>
+    <div
+      className={"body-text text-center mt-5"}
+      style={{ fontSize: "2.5rem" }}
+    >
       Loading...
       <img
         style={{ width: "30px" }}
