@@ -53,9 +53,6 @@ function Choices(props) {
 }
 
 function Answer(props) {
-  {
-    /* Answer */
-  }
   return (
     <Container>
       <Form className="short-answer my-3">
