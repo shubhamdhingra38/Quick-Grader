@@ -2,8 +2,33 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
-import { ListGroupItem, ListGroup, Container, Collapse } from "react-bootstrap";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import { makeStyles } from "@material-ui/core/";
+import Response from "./Response";
+
+const useStyles = makeStyles({
+  responseItem: {
+    color: "white",
+    background: "rgb(50, 50, 50) !important",
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+  testInfo: {
+    borderRight: "2px solid black",
+  },
+  selectedResponse: {
+    color: "white",
+    background: "darkgreen !important",
+  },
+});
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -11,6 +36,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 const domain = "http://127.0.0.1:8000/";
 
 const api = {
+  quiz_url: domain + "test/quiz/",
   my_tests_url: domain + "test/mytests/",
   question_url: domain + "test/question/",
   lock_unlock_quiz_url: domain + "test/quiz/lock/",
@@ -23,6 +49,13 @@ const api = {
 
 function ViewResponses(props) {
   const [responses, setResponses] = useState([]);
+  const [selectedID, setSelectedID] = useState();
+  const classes = useStyles();
+
+  const handleClick = (event, responseID) => {
+    props.setResponseID(responseID);
+    setSelectedID(responseID);
+  };
 
   // get the responses intially
   useEffect(() => {
@@ -44,36 +77,33 @@ function ViewResponses(props) {
 
   let responseElements = responses.map((data, index) => {
     return (
-      <ListGroupItem
+      <ListItem
         key={data.id}
-        style={
-          data.graded & 1 ? { backgroundColor: "rgba(200, 200, 200, 1)" } : null
+        onClick={(e) => {
+          handleClick(e, data.id);
+        }}
+        className={
+          data.id == selectedID
+            ? classes.selectedResponse
+            : classes.responseItem
         }
+        style={{ backgroundColor: "black", width: "80%" }}
       >
-        <div className="d-flex justify-content-between">
-          <Link
-            target="_blank"
-            to={"/dashboard/created-tests/response/" + data.id}
-          >
-            {data.taken_by}
-          </Link>
+        <div>
+          <p>{data.taken_by}</p>
           {data.graded && (
-            <p className="lead mb-0" style={{ fontSize: "1.0rem" }}>
-              Score: {data.total_score}
-            </p>
+            <p style={{ fontSize: "1.0rem" }}>Score: {data.total_score}</p>
           )}
         </div>
-      </ListGroupItem>
+      </ListItem>
     );
   });
 
-  return <ListGroup className="w-50">{responseElements}</ListGroup>;
+  return <List>{responseElements}</List>;
 }
 
 // display a single Test
 function Test(props) {
-  const [toolbarStatus, setToolbarStatus] = useState(false);
-  const [viewResponses, setViewResponses] = useState(false);
   const [lockStatus, setLockStatus] = useState(false);
   const [questions, setQuestions] = useState(() => {
     return [];
@@ -81,6 +111,9 @@ function Test(props) {
   const [choices, setChoices] = useState(() => {
     return {};
   });
+
+  const [selectedResponseID, setSelectedResponseID] = useState();
+  const classes = useStyles();
 
   // console.log(questions);
 
@@ -147,55 +180,6 @@ function Test(props) {
     // console.log(choices);
   };
 
-  let questionElements = questions.map((data, idx) => {
-    if (data.type == 1) {
-      // Short answer
-      return (
-        <div key={data.id} className="my-3 bg-light p-3">
-          <span style={{ fontSize: "1.2em" }}>
-            Question {idx + 1}. {data.problem}
-          </span>
-          <div className="answer">
-            <p>Answer: {data.ans}</p>
-          </div>
-          <div className="max-marks d-flex justify-content-end pr-1">
-            Maximum Marks: {data.maximum_score}
-          </div>
-        </div>
-      );
-    } else {
-      // MCQ
-      let questionChoices = data.choices.map((choiceID) => {
-        return choices[choiceID] ? (
-          <ListGroup.Item
-            key={`${props.data.id}-${choices[choiceID].id}`}
-            className={choices[choiceID].is_answer ? "bg-success" : null}
-          >
-            <div className="choice p-1">
-              <p>{choices[choiceID].choice_text}</p>
-            </div>
-          </ListGroup.Item>
-        ) : (
-          "Loading..."
-        );
-      });
-
-      return (
-        <div key={data.id} className="my-3 bg-light p-3">
-          <span style={{ fontSize: "1.2em" }}>
-            Question {idx + 1}. {data.problem}
-          </span>
-          <div className="choices mt-3">
-            <ul>{questionChoices}</ul>
-          </div>
-          <div className="max-marks d-flex justify-content-end pr-1">
-            Maximum Marks: {data.maximum_score}
-          </div>
-        </div>
-      );
-    }
-  });
-
   const changeLockStatus = () => {
     axios
       .get(api.lock_unlock_quiz_url + props.data.code + "/", {
@@ -210,131 +194,64 @@ function Test(props) {
 
   return (
     <Container className="test-form my-5 border p-3">
-      <div className="info">
-        <h3 className="display-4">{props.data.title}</h3>
-        <div className="d-flex justify-content-between">
-          <p className="lead">{props.data.description}</p>
-          <div className="code-share">
-            <p className="card" style={{ color: "black" }}>
-              {props.data.code}
-            </p>
-            <button
-              className="btn btn-sm btn-info"
-              onClick={() => {
-                console.log("code", props.data.code, "copied");
-                navigator.clipboard.writeText(props.data.code);
-              }}
-            >
-              Copy
-            </button>
-          </div>
-        </div>
-
-        <hr className="info-hr" />
-      </div>
-
-      <div className="list-group">{questionElements}</div>
-
-      <div className="toolbar d-flex justify-content-end">
-        <Link
-          onClick={() => setToolbarStatus((oldValue) => !oldValue)}
-          aria-controls="collapse-text"
-          aria-expanded={toolbarStatus}
-          className="my-3 d-flex justify-content-end"
+      <Grid container spacing={4}>
+        <Grid
+          container
+          item
+          direction="column"
+          xs={12}
+          md={4}
+          className={classes.testInfo}
         >
-          {toolbarStatus ? (
-            <img
-              style={{ height: "30px" }}
-              className="content-image mx-3"
-              src={require("../static/images/collapse.png")}
-            />
-          ) : (
-            <img
-              style={{ height: "30px" }}
-              className="content-image mx-3"
-              src={require("../static/images/info.png")}
-            />
-          )}
-        </Link>
+          <Grid item>
+            <h3>{props.data.title}</h3>
+          </Grid>
+          <Grid item>
+            <p>{props.data.description}</p>
+          </Grid>
+          <Grid container item>
+            <Grid item xs={6}>
+              <p>{props.data.code}</p>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                onClick={() => {
+                  console.log("code", props.data.code, "copied");
+                  navigator.clipboard.writeText(props.data.code);
+                }}
+              >
+                Copy
+              </Button>
+            </Grid>
+          </Grid>
 
-        {/* Lock/Unlock the quiz (stop accepting responses)  */}
-        <button
-          className="lock-unlock btn btn-transparent"
-          onClick={changeLockStatus}
-        >
-          {lockStatus ? (
-            <img
-              style={{ height: "30px" }}
-              className="content-image mx-1"
-              src={require("../static/images/unlock.png")}
-            />
-          ) : (
-            <img
-              style={{ height: "30px" }}
-              className="content-image mx-1"
-              src={require("../static/images/lock.png")}
-            />
-          )}
-        </button>
-      </div>
-
-      <Collapse in={toolbarStatus} className="mt-4">
-        <div id="collapse-text mt-2">
-          <Link onClick={() => setViewResponses((value) => !value)}>
-            {viewResponses ? (
-              <div className="d-flex">
-                <img
-                  style={{ height: "25px" }}
-                  className="content-image mx-1"
-                  src={require("../static/images/responses.png")}
-                />
-                <p className="text-dark">Hide Responses</p>
-              </div>
-            ) : (
-              <div className="d-flex">
-                <img
-                  style={{ height: "25px" }}
-                  className="content-image mx-1"
-                  src={require("../static/images/responses.png")}
-                />
-                <p className="text-dark">Show Responses</p>
-              </div>
-            )}
-          </Link>
-          {viewResponses && (
-            <div className="responses my-1 mb-3">
-              <p className="lead" style={{ fontSize: "0.8rem" }}>
+          <Grid container item direction="column">
+            <Grid item>
+              <Typography variant="h6">Responses</Typography>
+              <p style={{ fontSize: "0.8rem" }}>
                 Click the responses to grade them manually.
               </p>
+            </Grid>
+            <Grid item>
               <ViewResponses
+                setResponseID={setSelectedResponseID}
                 id={props.data.id}
                 questions={questions}
                 token={props.token}
               />
-            </div>
-          )}
+            </Grid>
+          </Grid>
+        </Grid>
 
-          <Link
-            className="m-0"
-            to={"/dashboard/created-tests/autograde/" + props.data.id}
-          >
-            <div className="d-flex">
-              <img
-                style={{ height: "25px" }}
-                className="content-image mx-1"
-                src={require("../static/images/autograde.png")}
-              />
-              <p className="text-dark">Auto Grade</p>
-            </div>
-          </Link>
-          {/* <Link
-            className="btn btn-danger btn-sm m-1"
-            to={"/dashboard/created-tests/plagiarism-results/" + props.data.id}
-          >
-            Plagiarism Results
-          </Link> */}
-        </div>
-      </Collapse>
+        <Grid item xs={12} md={8}>
+          <Response
+            choices={choices}
+            questions={questions}
+            responseID={selectedResponseID}
+            token={props.token}
+          />
+        </Grid>
+      </Grid>
     </Container>
   );
 }
