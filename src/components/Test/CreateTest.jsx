@@ -4,15 +4,8 @@ import "./TakeTest.css";
 import Quiz from "./Quiz";
 import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import "./CreateTest.css";
-import {
-  Form,
-  Button,
-  Alert,
-  ListGroup,
-  Card,
-  Container,
-} from "react-bootstrap";
-
+import { Form, Button, Alert, ListGroup, Card } from "react-bootstrap";
+import Container from "@material-ui/core/Container";
 const domain = "http://127.0.0.1:8000/";
 
 const api = {
@@ -517,8 +510,6 @@ function CreateTest(props) {
   const [description, setDescription] = useState("");
   const [redirectInfo, setRedirectInfo] = useState({ status: false });
 
-  console.log(props.token);
-
   const validate = () => {
     if (title.length == 0) return false;
     if (description.length == 0) return false;
@@ -573,7 +564,10 @@ function CreateTest(props) {
       </div>
     );
   return (
-    <Container className="mt-5 border p-4 rounded test-creation w-75">
+    <Container
+      style={{ position: "relative" }}
+      className="border p-3 border test-form"
+    >
       <Form>
         <Form.Group controlId="formTitle">
           <Form.Label style={{ fontSize: "1.3rem" }}>Title</Form.Label>
@@ -602,11 +596,14 @@ function CreateTest(props) {
             required
           />
         </Form.Group>
-        <Form.Group controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Use AI to grade" />
-          <Form.Check type="checkbox" label="Use Plagiarism Detection" />
-        </Form.Group>
-        <Button onClick={handleSubmit} variant="primary" type="submit">
+        <br />
+        <br />
+        <Button
+          style={{ position: "absolute", right: "15px", bottom: "15px" }}
+          onClick={handleSubmit}
+          variant="primary"
+          type="submit"
+        >
           Submit
         </Button>
       </Form>

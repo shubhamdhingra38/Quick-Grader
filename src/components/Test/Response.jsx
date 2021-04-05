@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
-import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/";
 import List from "@material-ui/core/List";
@@ -32,9 +31,9 @@ const useStyles = makeStyles({
   gradeButton: {
     marginTop: "15px",
     marginBottom: "10px",
-    background: "rgb(0, 150, 150)",
+    background: "rgba(0, 100, 0, 0.3)",
     "&:hover": {
-      background: "rgba(255, 0, 0, 0.5)",
+      background: "rgba(150, 0, 0, 0.3)",
     },
   },
 });
@@ -57,7 +56,32 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 function Response(props) {
   const { questions, responseID, choices } = props;
   const [mapQuestionToAnswer, setMapQuestionToAnswer] = useState({});
+  const [grade, setGrade] = useState({});
   const classes = useStyles();
+
+  const handleClick = () => {
+    console.log("Submitting for grading");
+    console.log(grade);
+    axios
+      .post(
+        api.grade_url,
+        {
+          gradeInfo: grade,
+          responseID: responseID,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${props.token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        props.updateResponse(responseID);
+      })
+      .catch((err) => console.error(err.response));
+  };
 
   useEffect(() => {
     if (responseID) {
@@ -90,11 +114,17 @@ function Response(props) {
             questions={questions}
             choicesData={choices}
             mapQuestionToAnswer={mapQuestionToAnswer}
+            setGrade={setGrade}
+            grade={grade}
           />
           <Grid container item>
             <Grid item xs={10}></Grid>
             <Grid item xs={2}>
-              <Button variant="contained" className={classes.gradeButton}>
+              <Button
+                onClick={handleClick}
+                variant="contained"
+                className={classes.gradeButton}
+              >
                 Grade
               </Button>
             </Grid>
@@ -107,9 +137,13 @@ function Response(props) {
 
 export default Response;
 
-function ListQuestionsAnswers({ questions, mapQuestionToAnswer, choicesData }) {
-  const [marks, setMarks] = useState({});
-
+function ListQuestionsAnswers({
+  questions,
+  mapQuestionToAnswer,
+  choicesData,
+  grade,
+  setGrade,
+}) {
   useEffect(() => {
     let initState = {};
     //reset initial state
@@ -119,15 +153,13 @@ function ListQuestionsAnswers({ questions, mapQuestionToAnswer, choicesData }) {
         initState[answer.id] = 0;
       }
     });
-    setMarks(initState);
+    setGrade(initState);
   }, [mapQuestionToAnswer]);
-  console.log(marks);
 
   const handleChange = (event) => {
     let qID = event.target.id;
     let val = event.target.value;
-    console.log("qid got is ", qID);
-    setMarks((prevState) => ({
+    setGrade((prevState) => ({
       ...prevState,
       [qID]: val,
     }));
@@ -151,7 +183,7 @@ function ListQuestionsAnswers({ questions, mapQuestionToAnswer, choicesData }) {
             <TextField
               label="Enter marks"
               id={answer.id.toString()}
-              value={marks[question.id]}
+              value={grade[question.id]}
               onChange={handleChange}
             />
           )}

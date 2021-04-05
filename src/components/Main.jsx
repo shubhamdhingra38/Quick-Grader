@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(3),
   },
   navIcon: {
     marginRight: theme.spacing(1),
@@ -302,10 +302,6 @@ function Main(props) {
           </Drawer>
         </Hidden>
       </nav>
-
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-      </main>
     </div>
   );
 }

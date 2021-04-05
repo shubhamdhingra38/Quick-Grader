@@ -6,8 +6,7 @@ import Home from "./components/Home";
 import TakeTest from "./components/Test/TakeTest";
 import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
-import Dashboard from "./components/Dashboard/Dashboard";
-import Response from "./components/Dashboard/Response";
+import Response from "./components/Test/Response";
 import PlagiarismResults from "./components/Dashboard/PlagiarismResults";
 import Plagiarism from "./components/Dashboard/Plagiarism";
 import AutoGrade from "./components/Dashboard/AutoGrade";
@@ -53,7 +52,7 @@ export default function App() {
 
   return (
     <Router>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex"}} className="mt-5">
         <Main token={token}/>
         <div className={classes.content}>
           <div className={classes.toolbar}/>
@@ -61,9 +60,6 @@ export default function App() {
             <Route exact path="/home" render={(props) => <Home {...props} />} />
             <Route exact path="/about">
               <About token={token} />
-            </Route>
-            <Route exact path="/dashboard">
-              <Dashboard token={token} />
             </Route>
             <Route exact path="/dashboard/created-tests">
               <CreatedTests token={token} />
