@@ -5,7 +5,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -14,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import { Alert } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 const domain = "http://127.0.0.1:8000/";
@@ -196,7 +195,7 @@ function SignUp(props) {
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Link to="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -208,7 +207,8 @@ function SignUp(props) {
   );
 }
 
-function Register() {
+function Register(props) {
+  props.setTitle("Sign Up");
   document.title = "Register";
   const [showSignUp, setShowSignUp] = useState(false);
   const [type, setType] = useState(null); //teacher or student
@@ -267,9 +267,9 @@ function Register() {
         style={{ flexWrap: "wrap" }}
       >
         Already have an account? Click
-        <a href="/login" color="blue">
+        <Link to="/login" color="blue">
           &nbsp;here&nbsp;
-        </a>
+        </Link>
         to login
       </p>
     </Container>

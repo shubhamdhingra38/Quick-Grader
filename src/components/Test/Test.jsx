@@ -254,9 +254,9 @@ export default function Test(props) {
               <p>{props.data.description}</p>
             </Grid>
 
-            <Grid container item>
+            <Grid container item spacing={2}>
               {" "}
-              <Grid item xs={5}>
+              <Grid item xs={6}>
                 <p
                   style={{
                     color: "black",
@@ -271,7 +271,7 @@ export default function Test(props) {
                   {props.data.code}
                 </p>
               </Grid>
-              <Grid item xs={1}>
+              <Grid item xs={2}>
                 <Button
                   size="small"
                   variant="outlined"

@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 
 function Logout(props) {
   const { token, setToken } = props;
+  props.setTitle("Sign Out");
   useEffect(() => {
     if (token) {
       setToken(null);

@@ -5,7 +5,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -14,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { Alert } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 
 const domain = "http://127.0.0.1:8000/";
@@ -47,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login(props) {
+  props.setTitle("Sign In");
   const classes = useStyles();
   const [creds, setCreds] = useState({ username: "", password: "" }); //user credentials
   const [errorMsg, setErrorMsg] = useState();
@@ -151,10 +151,10 @@ export default function Login(props) {
           >
             Sign In
           </Button>
-          <Grid container className={classes.text}>
-            <Grid item className={classes.text}>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+          <Grid container>
+            <Grid item>
+              <Link to="/register" variant="body2">
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>
