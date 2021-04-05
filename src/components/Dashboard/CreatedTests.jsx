@@ -32,6 +32,7 @@ function ShowTests(props) {
 }
 
 function CreatedTests(props) {
+  props.setTitle("Grade Tests [Manually]");
   const [myTests, setMyTests] = useState(null);
   // console.log(myTests);
 

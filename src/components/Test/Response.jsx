@@ -29,8 +29,7 @@ const useStyles = makeStyles({
     paddingBottom: "4px",
   },
   gradeButton: {
-    marginTop: "15px",
-    marginBottom: "10px",
+    marginTop: "16px",
     background: "rgba(0, 100, 0, 0.3)",
     "&:hover": {
       background: "rgba(150, 0, 0, 0.3)",
@@ -118,7 +117,7 @@ function Response(props) {
             grade={grade}
           />
           <Grid container item>
-            <Grid item xs={10}></Grid>
+            <Grid item xs={5}></Grid>
             <Grid item xs={2}>
               <Button
                 onClick={handleClick}
@@ -128,6 +127,7 @@ function Response(props) {
                 Grade
               </Button>
             </Grid>
+            <Grid item xs={5}></Grid>
           </Grid>
         </>
       )}
@@ -169,7 +169,7 @@ function ListQuestionsAnswers({
     let answer = mapQuestionToAnswer[question.id];
     return (
       <Grid key={`$q${question.id}a${answer.id}`} container item spacing={3}>
-        <Grid item xs={10}>
+        <Grid item xs={12} md={9}>
           <QuestionWithAnswer
             question={question}
             choicesData={choicesData}
@@ -177,11 +177,11 @@ function ListQuestionsAnswers({
             index={index}
           />
         </Grid>
-        <Grid item xs={2}>
-          Max Marks: {question.maximum_score}
+        <Grid item xs={12} md={3}>
+          <p>Max Marks: {question.maximum_score}</p>
           {question.type == 1 && (
             <TextField
-              label="Enter marks"
+              label="Score"
               id={answer.id.toString()}
               value={grade[question.id]}
               onChange={handleChange}

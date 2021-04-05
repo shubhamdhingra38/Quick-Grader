@@ -267,7 +267,7 @@ function Main(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            quickGrader
+            {props.title}
           </Typography>
         </Toolbar>
       </AppBar>

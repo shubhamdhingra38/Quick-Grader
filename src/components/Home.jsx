@@ -2,6 +2,7 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 
 function Home(props) {
+  props.setTitle("Home");
   return (
     <>
       <Typography variant="h4">Hello, world!</Typography>

@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const [token, setToken] = React.useState();
+  const [title, setTitle] = React.useState("quickGrader")
   const classes = useStyles();
 
   const setNewToken = (val) => {
@@ -53,21 +54,22 @@ export default function App() {
   return (
     <Router>
       <div style={{ display: "flex"}} className="mt-5">
-        <Main token={token}/>
+        <Main title={title} token={token}/>
         <div className={classes.content}>
           <div className={classes.toolbar}/>
           <Switch>
-            <Route exact path="/home" render={(props) => <Home {...props} />} />
+            <Route  exact path="/home" render={(props) => <Home setTitle={setTitle} {...props} />} />
             <Route exact path="/about">
-              <About token={token} />
+              <About token={token} setTitle={setTitle}/>
             </Route>
             <Route exact path="/dashboard/created-tests">
-              <CreatedTests token={token} />
+              <CreatedTests token={token} setTitle={setTitle}/>
             </Route>
             <Route
               path="/dashboard/generate-report"
-              component={GenerateReport}
-            ></Route>
+            >
+              <GenerateReport setTitle={setTitle}/>
+            </Route>
             <Route
               path="/dashboard/created-tests/response/:responseID"
               render={(props) => <Response token={token} {...props} />}
@@ -88,17 +90,17 @@ export default function App() {
             <TakeTest token={token} />
           </Route>
           <Route path="/login">
-            <Login setToken={setNewToken} />
+            <Login setTitle={setTitle} setToken={setNewToken} />
           </Route>
           <Route path="/register">
-            <Register />
+            <Register setTitle={setTitle} />
           </Route>
            <Route path="/logout">
-            <Logout token={token} setToken={setNewToken}/>
+            <Logout setTitle={setTitle} token={token} setToken={setNewToken}/>
           </Route>
           <Switch>
             <Route path="/create-test">
-              <CreateTest token={token} />
+              <CreateTest setTitle={setTitle} token={token} />
             </Route>
           </Switch>
         </div>
