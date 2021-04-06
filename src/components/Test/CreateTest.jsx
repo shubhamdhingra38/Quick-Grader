@@ -504,7 +504,10 @@ function AddQuestions(props) {
 }
 
 function CreateTest(props) {
-  props.setTitle("Create a new test");
+  React.useEffect(() => {
+    props.setTitle("Create a new test");
+  }, []);
+
   document.title = "Create Test";
   let { path, url } = useRouteMatch();
   const [title, setTitle] = useState("");
