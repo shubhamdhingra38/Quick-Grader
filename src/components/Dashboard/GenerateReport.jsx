@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Container, Alert } from "react-bootstrap";
 import axios from "axios";
 
+const domain = "http://127.0.0.1:8000/";
 const api = {
-  // http://localhost:8000/test/report/code/
-  report_generation_url: "https://quick-grader.herokuapp.com/test/report/",
-  // credentials: {
-  //   username: "ateacher2",
-  //   password: "password123@",
-  // },
+  report_generation_url: domain + "test/report/",
 };
 
 function GenerateReport(props) {
+  React.useEffect(() => {
+    props.setTitle("Download Report");
+  }, []);
+
   const [code, setCode] = useState("");
   const [invalid, setInvalid] = useState(false);
 
@@ -23,17 +23,15 @@ function GenerateReport(props) {
   };
 
   const handleSubmit = () => {
-    axios(
-      {
-        url: api.report_generation_url + code + "/", 
-        method: "GET",
-        responseType: "blob", // important
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${props.token}`,
-        },
+    axios({
+      url: api.report_generation_url + code + "/",
+      method: "GET",
+      responseType: "blob", // important
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${props.token}`,
       },
-    )
+    })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -73,12 +71,11 @@ function GenerateReport(props) {
             name="code"
             id="code"
             className="p-1 code-share mx-3"
-            style={{width: "160px"}}
+            style={{ width: "160px" }}
           />
           <button onClick={handleSubmit} className="btn btn-sm btn-success">
             Download
           </button>
-      
         </div>
       </div>
     </Container>

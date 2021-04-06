@@ -24,6 +24,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import { withRouter } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 import axios from "axios";
 
 const drawerWidth = 240;
@@ -116,6 +117,12 @@ const dashboardElements = {
       url: "",
     },
     { name: "Plagiarism", icon: FindInPageIcon, loginRequired: true, url: "" },
+    {
+      name: "Download Report",
+      icon: AssessmentIcon,
+      loginRequired: true,
+      url: "/dashboard/generate-report",
+    },
   ],
 
   Student: [
