@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Body.css";
-import { Link } from "react-router-dom";
 import { Container } from "@material-ui/core";
+import domain from "../api";
 
 // axios.defaults.xsrfHeaderName = "X-CSRFToken";
 // axios.defaults.xsrfCookieName = "csrftoken";
-const domain = "http://127.0.0.1:8000/";
 const api = {
   auth_url: domain + "auth/user/",
 };

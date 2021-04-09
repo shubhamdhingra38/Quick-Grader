@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { makeStyles } from "@material-ui/core/";
 import Response from "./Response";
+import domain from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   responseItem: {
@@ -35,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
-
-const domain = "http://127.0.0.1:8000/";
 
 const api = {
   quiz_url: domain + "test/quiz/",

@@ -15,9 +15,9 @@ import axios from "axios";
 import { Alert } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 import { useAlert } from "react-alert";
+import domain from "../../api";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
-const domain = "http://127.0.0.1:8000/";
 const api = {
   auth_url: domain + "auth/users/",
 };
