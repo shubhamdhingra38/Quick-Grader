@@ -25,6 +25,9 @@ import { withRouter } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import AssessmentIcon from "@material-ui/icons/Assessment";
+import Avatar from "@material-ui/core/Avatar";
+import { stripTrailingSlash } from "./Profile/Profile";
+
 import axios from "axios";
 
 const drawerWidth = 240;
@@ -32,6 +35,7 @@ const drawerWidth = 240;
 const domain = "http://127.0.0.1:8000/";
 const api = {
   userinfo_url: domain + "auth/user/",
+  profile_url: domain + "auth/profile/",
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -76,6 +80,15 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     padding: theme.spacing(4),
+  },
+  name: {
+    fontWeight: "bold",
+    fontSize: "16px",
+    padding: "5px",
+  },
+
+  desgination: {
+    color: "red",
   },
 }));
 
@@ -168,6 +181,7 @@ function ListOfItems({ items, subheader, isLoggedIn, history }) {
   return (
     <>
       <List
+        disablePadding
         subheader={
           <ListSubheader component="div" id={`${subheader}-list-subheader`}>
             {subheader}
@@ -202,6 +216,7 @@ function Main(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [userInfo, setUserInfo] = React.useState();
+  const [profileInfo, setProfileInfo] = React.useState();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const isLoggedIn = props.token ? true : false;
 
@@ -217,6 +232,14 @@ function Main(props) {
         .then((res) => {
           setUserInfo(res.data);
         });
+
+      axios
+        .get(api.profile_url, {
+          headers: {
+            Authorization: `Token ${props.token}`,
+          },
+        })
+        .then((res) => setProfileInfo(res.data));
     }
   }, [props.token]);
 
@@ -253,6 +276,32 @@ function Main(props) {
         isLoggedIn={isLoggedIn}
         history={history}
       />
+
+      {isLoggedIn && (
+        <div
+          style={{
+            marginLeft: "8px",
+            marginTop: "8px",
+          }}
+        >
+          <p>Currently signed in as:</p>
+          <Avatar
+            style={{
+              width: 60,
+              height: 60,
+            }}
+            src={
+              profileInfo ? stripTrailingSlash(domain) + profileInfo.image : ""
+            }
+          />
+          {profileInfo && userInfo && (
+            <>
+              <span className={classes.name}>{profileInfo.firstname}</span>
+              <span className={classes.desgination}>({userInfo.group})</span>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 

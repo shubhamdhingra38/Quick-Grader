@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import TakeTest from "./components/Test/TakeTest";
 import CreateTest from "./components/Test/CreateTest";
 import About from "./components/About/About";
+import Profile from "./components/Profile/Profile"
 import Response from "./components/Test/Response";
 import PlagiarismResults from "./components/Dashboard/PlagiarismResults";
 import Plagiarism from "./components/Dashboard/Plagiarism";
@@ -27,10 +28,14 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }));
 
+
+
 export default function App() {
+
   const [token, setToken] = React.useState();
-  const [title, setTitle] = React.useState("quickGrader")
+  const [title, setTitle] = React.useState("quickGrader");
   const classes = useStyles();
+
 
   const setNewToken = (val) => {
     console.log("setToken called");
@@ -43,6 +48,9 @@ export default function App() {
     }
   };
 
+
+
+
   React.useEffect(()=>{
     if(localStorage.token){
       setToken(localStorage.token)
@@ -51,10 +59,12 @@ export default function App() {
   }, [])
 
 
+
+
   return (
     <Router>
       <div style={{ display: "flex"}} className="mt-5">
-        <Main title={title} token={token}/>
+        <Main title={title} token={token} />
         <div className={classes.content}>
           <div className={classes.toolbar}/>
           <Switch>
@@ -97,6 +107,9 @@ export default function App() {
           </Route>
            <Route path="/logout">
             <Logout setTitle={setTitle} token={token} setToken={setNewToken}/>
+          </Route>
+          <Route path="/account">
+            <Profile token={token} setTitle={setTitle}/>
           </Route>
           <Switch>
             <Route path="/create-test">

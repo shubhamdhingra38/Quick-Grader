@@ -3,7 +3,8 @@ import axios from "axios";
 import "./TakeTest.css";
 import Quiz from "./Quiz";
 import "./CreateTest.css";
-import { Container, Alert } from "react-bootstrap";
+import { Container } from "react-bootstrap";
+import { useAlert } from "react-alert";
 
 const domain = "http://127.0.0.1:8000/";
 
@@ -18,8 +19,8 @@ function TakeTest(props) {
   const [status, setStatus] = useState({ code: "", submitted: false });
   const [quizDetail, setQuizDetail] = useState({});
   const [response, setResponse] = useState();
-  const [wrongMsg, setWrongMsg] = useState(null);
   const [didMount, setDidMount] = useState(false);
+  const alert = useAlert();
 
   // console.log(props.token);
 
@@ -48,7 +49,10 @@ function TakeTest(props) {
       })
       .catch((err) => {
         console.log(err.response);
-        setWrongMsg("You have already taken the test.");
+        alert.show("You have already taken the test.", {
+          type: "error",
+          timeout: 4000,
+        });
       });
   };
 
@@ -58,10 +62,7 @@ function TakeTest(props) {
   };
 
   const handleSubmit = (event) => {
-    console.log("A code was submitted");
-    console.log(status.code);
     event.preventDefault();
-    console.log("token being used is ", props.token);
     // console.log(api.quiz_url + status.code + "/");
     axios
       .get(api.quiz_url + status.code + "/", {
@@ -71,11 +72,14 @@ function TakeTest(props) {
         },
       })
       .then((res) => {
-        console.log("result is ", res);
         if (res.data.locked) {
           // console.log("Quiz is locked!");
-          setWrongMsg(
-            "Sorry. No more responses are allowed, the quiz is locked."
+          alert.show(
+            "Sorry. No more responses are allowed, the quiz is locked.",
+            {
+              type: "error",
+              timeout: 4000,
+            }
           );
         } else {
           setQuizDetail({ data: res.data });
@@ -86,7 +90,10 @@ function TakeTest(props) {
       })
       .catch((err) => {
         // console.log(err);
-        setWrongMsg("You probably entered an incorrect code. Try again.");
+        alert.show("You entered an incorrect code!", {
+          type: "error",
+          timeout: 4000,
+        });
       });
   };
 
@@ -137,17 +144,6 @@ function TakeTest(props) {
               </div>
             </form>
           </div>
-          {wrongMsg ? (
-            <Alert
-              className="mt-4 alert-bottom"
-              variant="danger"
-              onClose={() => setWrongMsg(false)}
-              dismissible
-            >
-              <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-              <p>{wrongMsg}</p>
-            </Alert>
-          ) : null}
         </div>
       )}
     </Container>

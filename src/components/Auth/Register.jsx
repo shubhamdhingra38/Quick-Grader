@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import axios from "axios";
 import { Alert } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
+import { useAlert } from "react-alert";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 const domain = "http://127.0.0.1:8000/";
@@ -45,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
 function SignUp(props) {
   const classes = useStyles();
   const [creds, setCreds] = useState({ username: "", password: "" }); //user credentials
-  const [errorMsg, setErrorMsg] = useState([]);
   const [redirect, setRedirect] = useState(false);
+  const alert = useAlert();
   // console.log(creds);
 
   const handleSubmit = (e) => {
@@ -64,18 +65,13 @@ function SignUp(props) {
         setRedirect(true);
       })
       .catch((err) => {
-        console.log(err.response);
-        if (err.response.status.code == 400) {
-          let errors = [];
-          Object.keys(err.response.data).forEach((field) => {
-            let error = !isNaN(field)
-              ? err.response.data[field]
-              : `${field}: ${err.response.data[field]}`;
-            errors.push(error);
+        let errors = err.response.data;
+        Object.keys(errors).forEach((error) => {
+          alert.show(`Required field ${error}`, {
+            timeout: 4000,
+            type: "error",
           });
-          setErrorMsg(errors);
-          console.log(errors);
-        }
+        });
       });
   };
 
@@ -87,32 +83,10 @@ function SignUp(props) {
     });
   };
 
-  let alertElements = errorMsg
-    ? errorMsg.map((ele) => {
-        if (ele.length > 0) {
-          return <li>{ele}</li>;
-        }
-      })
-    : null;
-
-  let alert =
-    errorMsg.length > 0 ? (
-      <Alert
-        variant="danger"
-        className="mt-2"
-        onClose={() => setErrorMsg([])}
-        dismissible
-      >
-        <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-        <ul>{alertElements}</ul>
-      </Alert>
-    ) : null;
-
   if (redirect) return <Redirect to="/login"></Redirect>;
 
   return (
     <Container style={{ maxWidth: "400px" }}>
-      {alert}
       <Container className="test-form border mt-5 p-3" component="main">
         <div className={classes.paper}>
           <Avatar className={classes.avatar}></Avatar>
@@ -208,7 +182,9 @@ function SignUp(props) {
 }
 
 function Register(props) {
-  props.setTitle("Sign Up");
+  useEffect(() => {
+    props.setTitle("Sign Up");
+  }, []);
   document.title = "Register";
   const [showSignUp, setShowSignUp] = useState(false);
   const [type, setType] = useState(null); //teacher or student

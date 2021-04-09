@@ -81,7 +81,6 @@ function Quiz(props) {
   const [redirect, setRedirect] = useState(false);
   const [unmounted, setUnmounted] = useState(false);
 
-  console.log(props.token);
   // console.log(props.location.state);
 
   // when student types answer update
@@ -265,7 +264,7 @@ function Quiz(props) {
           "Loading..."
         ) : (
           <div>
-            <ul className="listgroup text-info">{questions_list}</ul>
+            <ul className="listgroup text-info p-0">{questions_list}</ul>
           </div>
         )}
       </div>

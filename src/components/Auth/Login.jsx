@@ -1,20 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { Alert } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
+import { useAlert } from "react-alert";
 
 const domain = "http://127.0.0.1:8000/";
 const api = {
@@ -46,10 +43,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login(props) {
-  props.setTitle("Sign In");
+  useEffect(() => {
+    props.setTitle("Sign In");
+  }, []);
   const classes = useStyles();
   const [creds, setCreds] = useState({ username: "", password: "" }); //user credentials
-  const [errorMsg, setErrorMsg] = useState();
+  const alert = useAlert();
+
   const [redirect, setRedirect] = useState(false);
   // const [token, setToken] = useState(null);
 
@@ -70,7 +70,10 @@ export default function Login(props) {
       })
       .catch((err) => {
         console.error(err.response);
-        setErrorMsg("Invalid credentials");
+        alert.show("Invalid credentials!", {
+          timeout: 4000,
+          type: "error",
+        });
       });
   };
 
@@ -82,17 +85,6 @@ export default function Login(props) {
     });
   };
 
-  let alert = errorMsg ? (
-    <Alert
-      variant="danger"
-      className="mt-1"
-      onClose={() => setErrorMsg(null)}
-      dismissible
-    >
-      <p>{errorMsg}</p>
-    </Alert>
-  ) : null;
-
   if (redirect) {
     return <Redirect to="/"></Redirect>;
   }
@@ -103,7 +95,6 @@ export default function Login(props) {
       className="test-form border mt-5 p-3"
       style={{ maxWidth: "300px" }}
     >
-      {alert}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
