@@ -7,8 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import ProfilePicture from "./ProfilePicture";
+import domain from "../../api";
 
-const domain = "http://127.0.0.1:8000/";
 const api = {
   profile_url: domain + "auth/profile/",
 };
