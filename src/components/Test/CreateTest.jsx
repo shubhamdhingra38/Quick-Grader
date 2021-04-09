@@ -6,8 +6,9 @@ import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import "./CreateTest.css";
 import { Form, Button, Alert, ListGroup, Card } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
-const domain = "http://127.0.0.1:8000/";
+import { useAlert } from "react-alert";
 
+const domain = "http://127.0.0.1:8000/";
 const api = {
   quiz_url: domain + "test/quiz/",
   choice_url: domain + "test/choice/",
@@ -337,7 +338,9 @@ function AddQuestions(props) {
                     },
                   }
                 )
-                .then((result) => console.log(result))
+                .then((result) => {
+                  console.log(result);
+                })
                 .catch((err) => console.log(err.response));
             });
           }
