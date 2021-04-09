@@ -27,12 +27,12 @@ import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import AssessmentIcon from "@material-ui/icons/Assessment";
 import Avatar from "@material-ui/core/Avatar";
 import { stripTrailingSlash } from "./Profile/Profile";
+import domain from "../api";
 
 import axios from "axios";
 
 const drawerWidth = 240;
 
-const domain = "http://127.0.0.1:8000/";
 const api = {
   userinfo_url: domain + "auth/user/",
   profile_url: domain + "auth/profile/",

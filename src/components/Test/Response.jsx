@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import domain from "../../api";
 
 const useStyles = makeStyles({
   questionWithAnswer: {
@@ -36,8 +37,6 @@ const useStyles = makeStyles({
     },
   },
 });
-
-const domain = "http://127.0.0.1:8000/";
 
 const api = {
   quiz_url: domain + "test/quiz/",

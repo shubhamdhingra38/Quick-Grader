@@ -3,8 +3,7 @@ import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { Form, Container, ListGroup } from "react-bootstrap";
 import "./CreateTest.css";
-
-const domain = "http://127.0.0.1:8000/";
+import domain from "../../api";
 
 const api = {
   quiz_url: domain + "test/quiz/",

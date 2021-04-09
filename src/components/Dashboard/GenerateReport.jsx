@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Container, Alert } from "react-bootstrap";
 import axios from "axios";
+import domain from "../../api";
 
-const domain = "http://127.0.0.1:8000/";
 const api = {
   report_generation_url: domain + "test/report/",
 };

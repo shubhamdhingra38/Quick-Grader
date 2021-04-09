@@ -5,8 +5,7 @@ import Quiz from "./Quiz";
 import "./CreateTest.css";
 import { Container } from "react-bootstrap";
 import { useAlert } from "react-alert";
-
-const domain = "http://127.0.0.1:8000/";
+import domain from "../../api";
 
 const api = {
   quiz_url: domain + "test/quiz/instance/",

@@ -12,8 +12,8 @@ import Container from "@material-ui/core/Container";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 import { useAlert } from "react-alert";
+import domain from "../../api";
 
-const domain = "http://127.0.0.1:8000/";
 const api = {
   auth_url: domain + "auth/token/",
 };

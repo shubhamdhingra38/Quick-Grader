@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Test from "../Test/Test";
 import Container from "@material-ui/core/Container";
+import domain from "../../api";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
-
-const domain = "http://127.0.0.1:8000/";
 
 const api = {
   quiz_url: domain + "test/quiz/",
