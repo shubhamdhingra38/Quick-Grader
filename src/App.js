@@ -10,7 +10,7 @@ import Profile from "./components/Profile/Profile"
 import Response from "./components/Test/Response";
 import PlagiarismResults from "./components/Dashboard/PlagiarismResults";
 import Plagiarism from "./components/Dashboard/Plagiarism";
-import AutoGrade from "./components/Dashboard/AutoGrade";
+import ClusterGrade from "./components/Dashboard/ClusterGrade";
 import CreatedTests from "./components/Dashboard/CreatedTests";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import GenerateReport from "./components/Dashboard/GenerateReport";
@@ -92,8 +92,8 @@ export default function App() {
               render={(props) => <PlagiarismResults token={token} {...props} />}
             ></Route>
             <Route
-              path="/dashboard/created-tests/autograde/:quizID"
-              render={(props) => <AutoGrade token={token} {...props} />}
+              path="/dashboard/cluster-grade/"
+              render={(props) => <ClusterGrade token={token} {...props} />}
             ></Route>
           </Switch>
           <Route path="/take-test">

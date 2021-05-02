@@ -127,7 +127,7 @@ const dashboardElements = {
       name: "Grade [Cluster]",
       icon: GroupWorkIcon,
       loginRequired: true,
-      url: "",
+      url: "/dashboard/cluster-grade",
     },
     { name: "Plagiarism", icon: FindInPageIcon, loginRequired: true, url: "" },
     {

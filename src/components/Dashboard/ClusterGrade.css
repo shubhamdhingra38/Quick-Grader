@@ -1,0 +1,10 @@
+.cluster{
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 1);
+    padding: 8px;
+}
+.cluster-question-text{
+}
+.cluster-answers{
+    border-top: 2px dashed black;
+}
