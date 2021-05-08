@@ -9,6 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import domain from "../../api";
+import Container from '@material-ui/core/Container'
 
 const useStyles = makeStyles({
   questionWithAnswer: {
@@ -105,7 +106,7 @@ function Response(props) {
   }, [responseID]);
 
   return (
-    <>
+    <Container>
       {Object.keys(mapQuestionToAnswer).length == questions.length && (
         <>
           <ListQuestionsAnswers
@@ -114,23 +115,26 @@ function Response(props) {
             mapQuestionToAnswer={mapQuestionToAnswer}
             setGrade={setGrade}
             grade={grade}
+            plagiarism={props.plagiarism}
           />
-          <Grid container item>
-            <Grid item xs={5}></Grid>
-            <Grid item xs={2}>
-              <Button
-                onClick={handleClick}
-                variant="contained"
-                className={classes.gradeButton}
-              >
-                Grade
-              </Button>
+          {!props.plagiarism && (
+            <Grid container item>
+              <Grid item xs={5}></Grid>
+              <Grid item xs={2}>
+                <Button
+                  onClick={handleClick}
+                  variant="contained"
+                  className={classes.gradeButton}
+                >
+                  Grade
+                </Button>
+              </Grid>
+              <Grid item xs={5}></Grid>
             </Grid>
-            <Grid item xs={5}></Grid>
-          </Grid>
+          )}
         </>
       )}
-    </>
+    </Container>
   );
 }
 
@@ -142,6 +146,7 @@ function ListQuestionsAnswers({
   choicesData,
   grade,
   setGrade,
+  plagiarism
 }) {
   useEffect(() => {
     let initState = {};
@@ -176,17 +181,19 @@ function ListQuestionsAnswers({
             index={index}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <p>Max Marks: {question.maximum_score}</p>
-          {question.type == 1 && (
-            <TextField
-              label="Score"
-              id={answer.id.toString()}
-              value={grade[question.id]}
-              onChange={handleChange}
-            />
-          )}
-        </Grid>
+        {!plagiarism && (
+          <Grid item xs={12} md={3}>
+            <p>Max Marks: {question.maximum_score}</p>
+            {question.type == 1 && (
+              <TextField
+                label="Score"
+                id={answer.id.toString()}
+                value={grade[question.id]}
+                onChange={handleChange}
+              />
+            )}
+          </Grid>
+        )}
       </Grid>
     );
   });

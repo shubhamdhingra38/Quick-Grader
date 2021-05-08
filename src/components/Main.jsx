@@ -129,7 +129,7 @@ const dashboardElements = {
       loginRequired: true,
       url: "/dashboard/cluster-grade",
     },
-    { name: "Plagiarism", icon: FindInPageIcon, loginRequired: true, url: "" },
+    { name: "Plagiarism", icon: FindInPageIcon, loginRequired: true, url: "/dashboard/plagiarism-results/" },
     {
       name: "Download Report",
       icon: AssessmentIcon,

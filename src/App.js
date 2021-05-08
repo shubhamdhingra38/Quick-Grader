@@ -84,12 +84,9 @@ export default function App() {
               path="/dashboard/created-tests/response/:responseID"
               render={(props) => <Response token={token} {...props} />}
             />
-            <Route path="/dashboard/plagiarism/">
-              <Plagiarism token={token} />
-            </Route>
             <Route
-              path="/dashboard/plagiarism-results/:quizID"
-              render={(props) => <PlagiarismResults token={token} {...props} />}
+              path="/dashboard/plagiarism-results/"
+              render={(props) => <PlagiarismResults token={token} setTitle={setTitle} {...props} />}
             ></Route>
             <Route
               path="/dashboard/cluster-grade/"

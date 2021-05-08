@@ -11,6 +11,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { makeStyles } from "@material-ui/core/";
 import Response from "./Response";
 import domain from "../../api";
+import ViewResponses from "./ViewResponses.jsx";
 
 const useStyles = makeStyles((theme) => ({
   responseItem: {
@@ -48,62 +49,6 @@ const api = {
   // http://localhost:8000/test/answer/?responseID=36
   answer_url: domain + "test/answer/",
 };
-
-function ViewResponses(props) {
-  const [selectedID, setSelectedID] = useState();
-  const classes = useStyles();
-  const { responses } = props;
-
-  const handleClick = (event, responseID) => {
-    props.setResponseID(responseID);
-    setSelectedID(responseID);
-  };
-
-  // get the responses intially
-  useEffect(() => {}, []);
-
-  let responseElements = responses.map((data, index) => {
-    return (
-      <ListItem
-        divider={index == responses.length - 1 ? false : true}
-        key={data.id}
-        className={
-          selectedID == data.id
-            ? classes.selectedResponse
-            : classes.responseItem
-        }
-        onClick={(e) => {
-          handleClick(e, data.id);
-        }}
-      >
-        <Grid container>
-          <Grid item xs={2}>
-            <AccountCircleIcon
-              style={{
-                height: 50,
-                width: 50,
-                paddingTop: "8px",
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={10}>
-            <p>{data.taken_by}</p>
-            {data.graded && (
-              <p style={{ fontSize: "1.0rem" }}>Score: {data.total_score}</p>
-            )}
-          </Grid>
-        </Grid>
-      </ListItem>
-    );
-  });
-
-  return (
-    <List disablePadding className={classes.root}>
-      {responseElements}
-    </List>
-  );
-}
 
 export default function Test(props) {
   const [lockStatus, setLockStatus] = useState(false);

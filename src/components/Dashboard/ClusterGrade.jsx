@@ -184,6 +184,7 @@ export default function ClusterGrade(props) {
                             value={gradeInfo[answerID]}
                             onChange={handleChangeGrade}
                             type="text"
+                            placeholder="Marks"
                           />
                         </Grid>
                         <Grid item></Grid>
