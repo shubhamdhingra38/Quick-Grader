@@ -7,7 +7,7 @@ The backend repository (containing the Django code): https://github.com/shubhamd
 
 - [x] CRUD functionality
 - [x] Token Auth
-- [ ] Semi-supervised grading
-- [ ] Plagiarism Detection
+- [x] Semi-supervised grading
+- [x] Plagiarism Detection
 
 
