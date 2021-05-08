@@ -93,7 +93,7 @@ export default function App() {
             ></Route>
             <Route
               path="/dashboard/cluster-grade/"
-              render={(props) => <ClusterGrade token={token} {...props} />}
+              render={(props) => <ClusterGrade token={token} {...props} setTitle={setTitle}/>}
             ></Route>
           </Switch>
           <Route path="/take-test">

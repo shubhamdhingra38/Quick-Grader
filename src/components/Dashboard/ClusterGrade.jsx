@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import { Redirect } from "react-router-dom";
+import TextField from '@material-ui/core/TextField'
 import axios from "axios";
 import domain from "../../api";
 import "./ClusterGrade.css";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+
 const api = {
   clusters_generate_url: domain + "ml/clusters-generate/",
   cluster_grade_url: domain + "ml/cluster-grade/",
@@ -22,6 +25,10 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 export default function ClusterGrade(props) {
+  useEffect(() => {
+    props.setTitle("Cluster Grade");
+  }, []);
+
   const [code, setCode] = useState("");
   const [invalid, setInvalid] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -61,12 +68,14 @@ export default function ClusterGrade(props) {
       grades: grades,
     };
     console.log("requestBody", requestBody);
-    axios.post(api.cluster_grade_url, requestBody, {
-      headers: {
+    axios
+      .post(api.cluster_grade_url, requestBody, {
+        headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${props.token}`,
         },
-    }).then(res => console.log(res));
+      })
+      .then((res) => console.log(res));
   };
 
   const handleSubmit = () => {
@@ -157,33 +166,40 @@ export default function ClusterGrade(props) {
             <p className="cluster-question-text lead">
               Question{idx + 1}. {question.problem}
             </p>
-            <div className="cluster-answers">
+            <List className="cluster-answers">
               {clusters[question.id].map((answerID, idx) => {
                 if (answerInfo[answerID])
                   return (
-                    <div className="cluster-answer">
-                      <p className="cluster-answer-text ">
-                        Answer {idx + 1}. {answerInfo[answerID].short_ans}
-                      </p>
-                      <input
-                        id={answerID}
-                        value={gradeInfo[answerID]}
-                        onChange={handleChangeGrade}
-                        type="number"
-                        placeholder="Marks"
-                      ></input>
-                    </div>
+                    <ListItem className="cluster-answer" divider>
+                      <Grid container direction="column">
+                        <Grid item>
+                          <p className="cluster-answer-text ">
+                            Answer {idx + 1}. {answerInfo[answerID].short_ans}
+                          </p>
+                        </Grid>
+                        <Grid item>
+                          <TextField
+                            label="Score"
+                            id={answerID}
+                            value={gradeInfo[answerID]}
+                            onChange={handleChangeGrade}
+                            type="text"
+                          />
+                        </Grid>
+                        <Grid item></Grid>
+                      </Grid>
+                    </ListItem>
                   );
                 else return <div>Loading...</div>;
               })}
-            </div>
-            <button
-              id={question.id}
-              onClick={handleGrade}
-              className="btn btn-sm btn-success"
-            >
-              Grade
-            </button>
+              <button
+                id={question.id}
+                onClick={handleGrade}
+                className="btn btn-sm btn-success grade-btn"
+              >
+                Grade
+              </button>
+            </List>
           </div>
         );
       } else {
@@ -194,34 +210,36 @@ export default function ClusterGrade(props) {
 
   return (
     <Container>
-      <div className="invitation-code h-100 mt-5">
-        <div className="row align-items-center h-100">
-          <img
-            style={{ width: "50px" }}
-            className="content-image mx-3"
-            src={require("../static/images/csv.png")}
-          />
-          <p className="font-cursive">Enter the code quiz code:</p>
-        </div>
+      {!showQuiz && (
+        <div className="invitation-code h-100 mt-5">
+          <div className="row align-items-center h-100">
+            <img
+              style={{ width: "50px" }}
+              className="content-image mx-3"
+              src={require("../static/images/csv.png")}
+            />
+            <p className="font-cursive">Enter the code quiz code:</p>
+          </div>
 
-        <div className="justify-content-center d-flex">
-          <input
-            onChange={handleChange}
-            type="text"
-            value={code}
-            name="code"
-            id="code"
-            className="p-1 code-share mx-3"
-            style={{ width: "160px" }}
-          />
-          <button onClick={handleSubmit} className="btn btn-sm btn-success">
-            Load
-          </button>
+          <div className="justify-content-center d-flex">
+            <input
+              onChange={handleChange}
+              type="text"
+              value={code}
+              name="code"
+              id="code"
+              className="p-1 code-share mx-3"
+              style={{ width: "160px" }}
+            />
+            <button onClick={handleSubmit} className="btn btn-sm btn-success">
+              Load
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="test-form my-5 border p-3">
-        {showQuiz && showAnswers && (
+      {showQuiz && showAnswers && (
+        <div className="test-form my-5 border p-3">
           <Grid container direction="column">
             <p className="display-4">{quizInfo.title}</p>
             <p className="h3">{quizInfo.description}</p>
@@ -231,9 +249,8 @@ export default function ClusterGrade(props) {
               <div>{questionElements}</div>
             </Grid>
           </Grid>
-        )}
-        {(!showQuiz || !showAnswers) && <div>Loading...</div>}
-      </div>
+        </div>
+      )}
     </Container>
   );
 }
