@@ -68,7 +68,7 @@ export default function App() {
         <div className={classes.content}>
           <div className={classes.toolbar}/>
           <Switch>
-            <Route  exact path="/home" render={(props) => <Home setTitle={setTitle} {...props} />} />
+            <Route  exact path="/home" render={(props) => <Home setTitle={setTitle} {...props} token={token} />} />
             <Route exact path="/about">
               <About token={token} setTitle={setTitle}/>
             </Route>
