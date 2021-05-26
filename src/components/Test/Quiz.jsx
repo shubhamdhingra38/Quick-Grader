@@ -3,6 +3,7 @@ import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { Form, Container, ListGroup } from "react-bootstrap";
 import "./CreateTest.css";
+import { useAlert } from 'react-alert';
 import domain from "../../api";
 
 const api = {
@@ -79,6 +80,8 @@ function Quiz(props) {
   const [loading, setLoading] = useState(true);
   const [redirect, setRedirect] = useState(false);
   const [unmounted, setUnmounted] = useState(false);
+  const alert = useAlert();
+
 
   // console.log(props.location.state);
 
@@ -194,6 +197,11 @@ function Quiz(props) {
         })
         .then((res) => {
           console.log(res.statusText);
+          alert.show("Submitted the test successfully!", 
+          {
+            type: "success",
+            timeout: 3000,
+          })
         })
         .catch((err) => console.log(err.response));
     }
