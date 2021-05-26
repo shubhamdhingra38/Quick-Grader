@@ -5,10 +5,12 @@ YouTube showcase video: https://www.youtube.com/watch?v=1WJTXIwgV34
 
 Screenshots:
 <details>
-  <summary>Home/Registration</summary>
+  <summary>Home/Registration/Account</summary>
   <img src="https://raw.githubusercontent.com/shubhamdhingra38/Quick-Grader/master/Screenshots/home.png"/>
   <hr/>
   <img src="https://raw.githubusercontent.com/shubhamdhingra38/Quick-Grader/master/Screenshots/register.png"/>
+  <hr/>
+  <img src="https://raw.githubusercontent.com/shubhamdhingra38/Quick-Grader/master/Screenshots/account.png"/>
   <hr/>
 </details>
 
