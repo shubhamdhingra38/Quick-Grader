@@ -8,9 +8,12 @@ import FlagIcon from '@material-ui/icons/Flag';
 import { IconButton } from '@material-ui/core';
 import domain from "../../api";
 import axios from "axios";
+import { stripTrailingSlash } from "../Profile/Profile";
+import Avatar from "@material-ui/core/Avatar";
 
 const api = {
   plagiarism_set_url: domain + "ml/set-plagiarism/",
+  public_profile_url: domain + "auth/view-profile",
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +48,7 @@ export default function ViewResponses(props) {
   const classes = useStyles();
   const { responses } = props;
   const [plagiarized, setPlagiarized] = useState(() => {
-    let plagiarism = {}
+    let plagiarism = {};
     responses.map((data, index) => {
       if(data.plag){
         plagiarism[data.id] = true;
@@ -55,6 +58,20 @@ export default function ViewResponses(props) {
     });
     return plagiarism;
   });
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    responses.forEach((data, index) => {
+      if(!userInfo[data.id]){
+        axios.get(api.public_profile_url + '?username=' + data.taken_by)
+        .then(response => {
+          setUserInfo(prevState => ({...prevState, [data.id]: response.data}));
+        })
+      }
+    })
+  }, []);
+
+  console.log(userInfo);
 
   const handleClick = (event, responseID) => {
     props.setResponseID(responseID);
@@ -93,7 +110,6 @@ export default function ViewResponses(props) {
 
 
   let responseElements = responses.map((data, index) => {
-    
     return (
       <ListItem
         divider={index == responses.length - 1 ? false : true}
@@ -109,13 +125,23 @@ export default function ViewResponses(props) {
       >
         <Grid container>
           <Grid item xs={2}>
+            {userInfo[data.id] && userInfo[data.id].image ?   <Avatar
+            style={{
+              width: 50,
+              height: 50,
+              marginTop: "4px",
+            }}
+            src={stripTrailingSlash(domain) + userInfo[data.id].image}
+          />
+            :
             <AccountCircleIcon
               style={{
                 height: 50,
                 width: 50,
-                paddingTop: "8px",
+                marginTop: "4px",
               }}
-            />
+            />}
+
           </Grid>
 
           <Grid item xs={8}>

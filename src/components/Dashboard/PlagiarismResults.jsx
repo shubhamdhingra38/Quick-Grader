@@ -5,6 +5,7 @@ import domain from "../../api";
 import Response from "../Test/Response.jsx";
 import ViewResponses from "../Test/ViewResponses.jsx";
 import { makeStyles } from "@material-ui/core/";
+import { Divider } from "@material-ui/core";
 
 const api = {
   quiz_url: domain + "test/quiz/instance/",
@@ -210,7 +211,7 @@ export default function PlagiarismResults(props) {
             <img
               style={{ width: "50px" }}
               className="content-image mx-3"
-              src={require("../static/images/csv.png")}
+              src={require("../static/images/flag_red.png")}
             />
             <p className="font-cursive">Enter the code quiz code:</p>
           </div>
@@ -249,6 +250,7 @@ export default function PlagiarismResults(props) {
           {showResponses && selectedResponseID && (
             <Grid item container>
               <Grid item md={6} xs={12}
+              style={{marginBottom: "16px"}}
                >
                 {questions && choices && (
                   <Response
@@ -260,6 +262,7 @@ export default function PlagiarismResults(props) {
                   ></Response>
                 )}
               </Grid>
+        
               <Grid item md={6} xs={12}>
                 {compareAgainst && questions && choices ? (
                   <Response

@@ -217,7 +217,7 @@ export default function ClusterGrade(props) {
             <img
               style={{ width: "50px" }}
               className="content-image mx-3"
-              src={require("../static/images/csv.png")}
+              src={require("../static/images/copyright.png")}
             />
             <p className="font-cursive">Enter the code quiz code:</p>
           </div>
