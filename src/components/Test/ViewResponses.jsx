@@ -4,6 +4,14 @@ import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { makeStyles } from "@material-ui/core/";
+import FlagIcon from '@material-ui/icons/Flag';
+import { IconButton } from '@material-ui/core';
+import domain from "../../api";
+import axios from "axios";
+
+const api = {
+  plagiarism_set_url: domain + "ml/set-plagiarism/",
+};
 
 const useStyles = makeStyles((theme) => ({
   responseItem: {
@@ -18,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.success.main,
   },
   selectedResponsePlagiarism: {
-    background: theme.palette.error.light,
+    background: 'rgba(0, 0, 0, 0.3)',
   },
   root: {
     width: "100%",
@@ -30,11 +38,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 export default function ViewResponses(props) {
-  console.log("props", props)
   const [selectedID, setSelectedID] = useState();
   const classes = useStyles();
   const { responses } = props;
+  const [plagiarized, setPlagiarized] = useState(() => {
+    let plagiarism = {}
+    responses.map((data, index) => {
+      if(data.plag){
+        plagiarism[data.id] = true;
+      } else{
+        plagiarism[data.id] = false;
+      }
+    });
+    return plagiarism;
+  });
 
   const handleClick = (event, responseID) => {
     props.setResponseID(responseID);
@@ -54,8 +74,26 @@ export default function ViewResponses(props) {
     return plagiarismStatus
   }
 
+  const handleFlagClick = (id) => {
+    let status = !plagiarized[id];
+    axios.post(api.plagiarism_set_url, {
+        responseID: id,
+        plagiarismStatus: status,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        },
+    }).then(response => console.log(response));
+    setPlagiarized(prevState => ({
+      ...prevState, [id]: !prevState[id]
+    }));
+  }
+
 
   let responseElements = responses.map((data, index) => {
+    
     return (
       <ListItem
         divider={index == responses.length - 1 ? false : true}
@@ -80,12 +118,25 @@ export default function ViewResponses(props) {
             />
           </Grid>
 
-          <Grid item xs={10}>
+          <Grid item xs={8}>
             <p>{data.taken_by}</p>
             {data.graded && (
               <p style={{ fontSize: "1.0rem" }}>Score: {data.total_score}</p>
             )}
             {props.plagiarism && PlagiarismStatus(data.id)}
+            
+          </Grid>
+
+          <Grid item xs={2}>
+          {props.plagiarism ? (
+              plagiarized[data.id] ?
+              <IconButton onClick={() => handleFlagClick(data.id)} aria-label="flag">
+                <FlagIcon fontSize='large' style={{color: 'firebrick'}}/>
+              </IconButton> :
+              <IconButton onClick={() => handleFlagClick(data.id)} aria-label="unflag">
+                <FlagIcon fontSize='large'/>
+              </IconButton>
+            ) : null}
           </Grid>
           
         </Grid>

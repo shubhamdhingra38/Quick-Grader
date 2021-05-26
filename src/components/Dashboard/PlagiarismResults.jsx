@@ -239,6 +239,7 @@ export default function PlagiarismResults(props) {
               setResponseID={setSelectedResponseID}
               responses={responses}
               plagiarism
+              token={props.token}
               plagiarismResults={plagiarismResults}
             />
           </Grid>
