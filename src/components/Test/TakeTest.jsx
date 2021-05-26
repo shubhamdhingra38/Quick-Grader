@@ -21,7 +21,10 @@ function TakeTest(props) {
   const [response, setResponse] = useState();
   const [didMount, setDidMount] = useState(false);
   const alert = useAlert();
-
+  
+  useEffect(() => {
+    props.setTitle("Attempt a quiz");
+  }, []);
   // console.log(props.token);
 
   // can only create one response per test for a student

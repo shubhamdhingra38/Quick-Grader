@@ -94,7 +94,7 @@ export default function App() {
             ></Route>
           </Switch>
           <Route path="/take-test">
-            <TakeTest token={token} />
+            <TakeTest token={token} setTitle={setTitle} />
           </Route>
           <Route path="/login">
             <Login setTitle={setTitle} setToken={setNewToken} />

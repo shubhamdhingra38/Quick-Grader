@@ -69,7 +69,7 @@ export default function ViewResponses(props) {
         })
       }
     })
-  }, []);
+  }, [responses]);
 
   console.log(userInfo);
 
@@ -123,7 +123,7 @@ export default function ViewResponses(props) {
           handleClick(e, data.id);
         }}
       >
-        <Grid container>
+        <Grid container spacing={3}>
           <Grid item xs={2}>
             {userInfo[data.id] && userInfo[data.id].image ?   <Avatar
             style={{
@@ -145,7 +145,7 @@ export default function ViewResponses(props) {
           </Grid>
 
           <Grid item xs={8}>
-            <p>{data.taken_by}</p>
+            <p style={{marginLeft: "8px"}}>{data.taken_by}</p>
             {data.graded && (
               <p style={{ fontSize: "1.0rem" }}>Score: {data.total_score}</p>
             )}

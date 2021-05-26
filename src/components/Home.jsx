@@ -2,6 +2,7 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import domain from "../api";
 import axios from "axios";
+import './Main.css';
 import { Divider } from "@material-ui/core";
 
 const api = {
@@ -48,8 +49,14 @@ function Home(props) {
     <>
       <Typography variant="h4">Hello, welcome to quickGrader!</Typography>
       <br/>
-      <p className="text-muted">Here are all the logs of submitted responses</p>
-      <Logs/>  
+      {props.token && <React.Fragment>
+        <p className="text-muted">Here are all the logs of submitted responses</p>
+        <Logs/>  
+      </React.Fragment>}
+      {!props.token && <p className="lead text-muted">
+        Use the power of AI for grading of quizzes and plagiarism detection.
+        </p>}
+     
 
     </>
   );
